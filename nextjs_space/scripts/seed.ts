@@ -18,18 +18,11 @@ const products = [
     imageUrl: '/products/keychain.jpg'
   },
   {
-    name: 'Fridge Magnet',
+    name: 'Custom Fridge Magnet',
     description: 'Display your favorite moments on any magnetic surface. Strong magnet backing ensures your memories stay put.',
     price: 9.99,
     category: 'fridge-magnet',
     imageUrl: '/products/fridge-magnet.jpg'
-  },
-  {
-    name: 'Custom Photo Mug',
-    description: 'Start every morning with a smile! This high-quality ceramic mug features your photo and is dishwasher safe.',
-    price: 18.99,
-    category: 'mug',
-    imageUrl: '/products/mug.jpg'
   },
   {
     name: 'Premium Canvas Print',
@@ -37,13 +30,6 @@ const products = [
     price: 49.99,
     category: 'canvas-print',
     imageUrl: '/products/canvas.jpg'
-  },
-  {
-    name: 'Custom Phone Case',
-    description: 'Protect your phone in style with a case featuring your favorite photo. Available for most popular phone models.',
-    price: 29.99,
-    category: 'phone-case',
-    imageUrl: '/products/phone-case.jpg'
   }
 ];
 

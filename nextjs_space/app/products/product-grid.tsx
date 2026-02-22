@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Box, Key, Coffee, Image as ImageIcon, Smartphone, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 
 interface Product {
   id: string;
@@ -13,15 +13,6 @@ interface Product {
   category: string;
   imageUrl: string;
 }
-
-const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  'photo-cube': Box,
-  'keychain': Key,
-  'fridge-magnet': Sparkles,
-  'mug': Coffee,
-  'canvas-print': ImageIcon,
-  'phone-case': Smartphone
-};
 
 export function ProductGrid({ products }: { products: Product[] }) {
   const [filter, setFilter] = useState('all');
@@ -59,7 +50,6 @@ export function ProductGrid({ products }: { products: Product[] }) {
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProducts.map((product, index) => {
-            const Icon = categoryIcons[product?.category ?? ''] ?? Box;
             return (
               <motion.div
                 key={product?.id ?? index}
@@ -69,8 +59,13 @@ export function ProductGrid({ products }: { products: Product[] }) {
               >
                 <Link href={`/products/${product?.id}`}>
                   <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all group cursor-pointer overflow-hidden h-full">
-                    <div className="aspect-video bg-gradient-to-br from-teal-50 to-orange-50 flex items-center justify-center group-hover:from-teal-100 group-hover:to-orange-100 transition-all">
-                      <Icon className="w-20 h-20 text-teal-600 opacity-40 group-hover:opacity-70 group-hover:scale-110 transition-all" />
+                    <div className="aspect-video relative bg-slate-100 overflow-hidden">
+                      <Image 
+                        src={product?.imageUrl ?? '/products/photo-cube.jpg'} 
+                        alt={product?.name ?? 'Product'} 
+                        fill 
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
                     </div>
                     <div className="p-5">
                       <div className="flex items-center gap-2 mb-2">
