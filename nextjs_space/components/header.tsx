@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { ShoppingCart, Menu, X, Home, Package, Info } from 'lucide-react';
+import { ShoppingCart, Menu, X, Home, Package, Info, Heart } from 'lucide-react';
 import { useCart } from './cart-provider';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -34,6 +34,10 @@ export function Header() {
             <Link href="/mission" className="flex items-center gap-1 text-slate-600 hover:text-teal-600 transition-colors">
               <Info className="w-4 h-4" />
               <span>Our Mission</span>
+            </Link>
+            <Link href="/merch-stories" className="flex items-center gap-1 text-slate-600 hover:text-teal-600 transition-colors">
+              <Heart className="w-4 h-4" />
+              <span>Merch & Stories</span>
             </Link>
           </nav>
 
@@ -92,6 +96,14 @@ export function Header() {
               >
                 <Info className="w-5 h-5" />
                 <span>Our Mission</span>
+              </Link>
+              <Link 
+                href="/merch-stories" 
+                className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 hover:bg-teal-50 text-slate-700"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Heart className="w-5 h-5" />
+                <span>Merch & Stories</span>
               </Link>
             </motion.nav>
           )}

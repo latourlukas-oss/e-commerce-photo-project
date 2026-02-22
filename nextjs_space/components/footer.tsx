@@ -13,12 +13,15 @@ export function Footer() {
             <span className="text-lg font-semibold">PEOPLESPRINTS</span>
           </div>
           
-          <nav className="flex gap-6">
+          <nav className="flex flex-wrap gap-6 justify-center">
             <Link href="/products" className="text-slate-300 hover:text-teal-400 transition-colors">
               Products
             </Link>
             <Link href="/mission" className="text-slate-300 hover:text-teal-400 transition-colors">
               Our Mission
+            </Link>
+            <Link href="/merch-stories" className="text-slate-300 hover:text-teal-400 transition-colors">
+              Merch & Stories
             </Link>
             <Link href="/cart" className="text-slate-300 hover:text-teal-400 transition-colors">
               Cart
