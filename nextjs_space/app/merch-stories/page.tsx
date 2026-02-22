@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Play, Heart, Shirt, ArrowRight } from 'lucide-react';
+import { Play, Heart, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -31,25 +31,24 @@ const stories = [
   }
 ];
 
-// Placeholder merch items - replace with actual products
 const merchItems = [
   {
     id: 1,
     name: 'PeoplesPrints T-Shirt',
-    description: 'Comfortable cotton tee with our mission on your heart.',
+    description: 'Comfortable cotton tee with our logo. Wear the mission.',
     price: 29.99,
     image: '/merch/tshirt.jpg'
   },
   {
     id: 2,
-    name: 'Hoodie',
+    name: 'PeoplesPrints Hoodie',
     description: 'Stay warm while spreading kindness.',
     price: 49.99,
     image: '/merch/hoodie.jpg'
   },
   {
     id: 3,
-    name: 'Cap',
+    name: 'PeoplesPrints Cap',
     description: 'Classic cap with embroidered logo.',
     price: 24.99,
     image: '/merch/cap.jpg'
@@ -165,8 +164,13 @@ export default function MerchStoriesPage() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all group"
               >
-                <div className="aspect-square bg-slate-100 relative flex items-center justify-center">
-                  <Shirt className="w-24 h-24 text-slate-300" />
+                <div className="aspect-square relative overflow-hidden">
+                  <Image 
+                    src={item.image} 
+                    alt={item.name} 
+                    fill 
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
                   <span className="absolute bottom-3 left-3 bg-orange-500 text-white text-xs px-2 py-1 rounded font-medium">
                     Coming Soon
                   </span>

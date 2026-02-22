@@ -1,9 +1,10 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { ArrowRight, Play, Shirt, Heart } from 'lucide-react';
+import { ArrowRight, Play, Heart } from 'lucide-react';
 
 const stories = [
   { title: 'Helping Families', description: 'Watch how your purchases helped families in need' },
@@ -12,9 +13,9 @@ const stories = [
 ];
 
 const merchItems = [
-  { name: 'T-Shirt', price: 29.99, description: 'Wear the mission' },
-  { name: 'Hoodie', price: 49.99, description: 'Stay warm, spread kindness' },
-  { name: 'Cap', price: 24.99, description: 'Classic embroidered logo' }
+  { name: 'T-Shirt', price: 29.99, description: 'Wear the mission', image: '/merch/tshirt.jpg' },
+  { name: 'Hoodie', price: 49.99, description: 'Stay warm, spread kindness', image: '/merch/hoodie.jpg' },
+  { name: 'Cap', price: 24.99, description: 'Classic embroidered logo', image: '/merch/cap.jpg' }
 ];
 
 export function MerchStoriesSection() {
@@ -86,8 +87,13 @@ export function MerchStoriesSection() {
               >
                 <Link href="/merch-stories">
                   <div className="bg-white/10 backdrop-blur rounded-xl p-6 hover:bg-white/20 transition-all group cursor-pointer h-full">
-                    <div className="aspect-square bg-white/10 rounded-lg mb-4 flex items-center justify-center relative">
-                      <Shirt className="w-16 h-16 text-white opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+                    <div className="aspect-square rounded-lg mb-4 relative overflow-hidden bg-white">
+                      <Image 
+                        src={item.image} 
+                        alt={item.name} 
+                        fill 
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
                       <span className="absolute bottom-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded font-medium">Coming Soon</span>
                     </div>
                     <h4 className="text-lg font-semibold text-white mb-1">{item?.name}</h4>
