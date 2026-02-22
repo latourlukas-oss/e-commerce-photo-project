@@ -1,17 +1,16 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { ArrowRight, Box, Key, Magnet, Coffee, Image as ImageIcon, Smartphone } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 const products = [
-  { name: 'Photo Cube', price: 24.99, icon: Box, description: 'A 3D rotating cube with your photos' },
-  { name: 'Keychain', price: 12.99, icon: Key, description: 'Keep memories close wherever you go' },
-  { name: 'Fridge Magnet', price: 9.99, icon: Magnet, description: 'Display memories on any magnetic surface' },
-  { name: 'Custom Mug', price: 18.99, icon: Coffee, description: 'Start your day with a smile' },
-  { name: 'Canvas Print', price: 49.99, icon: ImageIcon, description: 'Gallery-quality prints for your walls' },
-  { name: 'Phone Case', price: 29.99, icon: Smartphone, description: 'Protect your phone with your favorite photo' }
+  { name: 'Photo Cube', price: 24.99, image: '/products/photo-cube.jpg', description: 'A 3D rotating cube with your photos' },
+  { name: 'Keychain', price: 12.99, image: '/products/keychain.jpg', description: 'Keep memories close wherever you go' },
+  { name: 'Fridge Magnet', price: 9.99, image: '/products/fridge-magnet.jpg', description: 'Display memories on any magnetic surface' },
+  { name: 'Canvas Print', price: 49.99, image: '/products/canvas.jpg', description: 'Gallery-quality prints for your walls' }
 ];
 
 export function ProductShowcase() {
@@ -41,7 +40,7 @@ export function ProductShowcase() {
           </Link>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((product, index) => (
             <motion.div
               key={product?.name ?? index}
@@ -50,15 +49,22 @@ export function ProductShowcase() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
             >
               <Link href="/products">
-                <div className="bg-white rounded-xl p-6 hover:shadow-xl transition-all group cursor-pointer h-full">
-                  <div className="aspect-video bg-gradient-to-br from-teal-50 to-orange-50 rounded-lg mb-4 flex items-center justify-center group-hover:from-teal-100 group-hover:to-orange-100 transition-all">
-                    <product.icon className="w-16 h-16 text-teal-600 opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+                <div className="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all group cursor-pointer h-full">
+                  <div className="aspect-square relative bg-slate-100 overflow-hidden">
+                    <Image 
+                      src={product.image} 
+                      alt={product.name} 
+                      fill 
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
                   </div>
-                  <h3 className="text-lg font-semibold text-slate-800 mb-1">{product?.name}</h3>
-                  <p className="text-slate-500 text-sm mb-3">{product?.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold text-teal-600">${product?.price?.toFixed?.(2) ?? '0.00'}</span>
-                    <span className="text-sm text-orange-500 font-medium">Customize →</span>
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold text-slate-800 mb-1">{product?.name}</h3>
+                    <p className="text-slate-500 text-sm mb-3">{product?.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xl font-bold text-teal-600">${product?.price?.toFixed?.(2) ?? '0.00'}</span>
+                      <span className="text-sm text-orange-500 font-medium">Customize →</span>
+                    </div>
                   </div>
                 </div>
               </Link>
