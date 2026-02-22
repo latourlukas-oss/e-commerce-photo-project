@@ -3,6 +3,7 @@ import { MissionSection } from '@/components/mission-section';
 import { ProductShowcase } from '@/components/product-showcase';
 import { ImpactSection } from '@/components/impact-section';
 import { CTASection } from '@/components/cta-section';
+import { MerchStoriesSection } from '@/components/merch-stories-section';
 
 export default function HomePage() {
   return (
@@ -12,6 +13,7 @@ export default function HomePage() {
       <ProductShowcase />
       <ImpactSection />
       <CTASection />
+      <MerchStoriesSection />
     </div>
   );
 }
