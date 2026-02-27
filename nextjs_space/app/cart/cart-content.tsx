@@ -61,17 +61,16 @@ export function CartContent() {
             >
               {/* Product Preview */}
               <div className="w-24 h-24 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
-                {item?.uploadedPhotoUrl ? (
-                  <img 
-                    src={item?.uploadedPhotoUrl} 
-                    alt="Product preview" 
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-400">
-                    <ShoppingBag className="w-8 h-8" />
-                  </div>
-                )}
+                {(() => {
+                  const src = item?.uploadedPhotoUrls?.length ? item?.uploadedPhotoUrls?.[0] : item?.uploadedPhotoUrl;
+                  return src ? (
+                    <img src={src} alt="Product preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-slate-400">
+                      <ShoppingBag className="w-8 h-8" />
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Details */}

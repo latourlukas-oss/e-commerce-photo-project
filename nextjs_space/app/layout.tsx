@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { CartProvider } from '@/components/cart-provider';
+import { SectionSelector } from '@/components/section-selector';
 import Script from 'next/script';
 import { headers } from 'next/headers';
 
@@ -44,15 +45,16 @@ export default function RootLayout({
       <head>
         <Script src="https://apps.abacus.ai/chatllm/appllm-lib.js" strategy="lazyOnload" />
       </head>
-      <body className={`${inter.className} bg-slate-50 min-h-screen`} suppressHydrationWarning>
+      <body className={`${inter.className} bg-white min-h-screen`} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <CartProvider>
-            <div className="flex flex-col min-h-screen">
+            <div className="flex flex-col min-h-screen bg-white pb-20">
               <Header />
-              <main className="flex-1">
+              <main className="flex-1 bg-white">
                 {children}
               </main>
               <Footer />
+              <SectionSelector />
             </div>
           </CartProvider>
         </ThemeProvider>

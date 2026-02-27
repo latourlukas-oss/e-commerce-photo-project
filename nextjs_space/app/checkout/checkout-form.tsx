@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useCart } from '@/components/cart-provider';
+import type { CartItem } from '@/lib/cart';
 import { CreditCard, Sparkles, ShoppingBag, Loader2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
@@ -41,12 +42,20 @@ export function CheckoutForm() {
     setLoading(true);
 
     try {
+      // Normalize items: cube items have uploadedPhotoUrls array → store as JSON in uploadedPhotoUrl
+      const itemsToSend = (cart?.items ?? []).map((item: CartItem) => ({
+        ...item,
+        uploadedPhotoUrl: item?.uploadedPhotoUrls?.length
+          ? JSON.stringify(item.uploadedPhotoUrls)
+          : item?.uploadedPhotoUrl
+      }));
+
       // Create checkout session
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items: cart?.items ?? [],
+          items: itemsToSend,
           customer: formData
         })
       });
@@ -252,17 +261,20 @@ export function CheckoutForm() {
             {(cart?.items ?? []).map((item, index) => (
               <div key={`${item?.productId}-${index}`} className="flex gap-3">
                 <div className="w-16 h-16 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
-                  {item?.uploadedPhotoUrl ? (
-                    <img 
-                      src={item?.uploadedPhotoUrl} 
-                      alt="Product" 
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-400">
-                      <ShoppingBag className="w-6 h-6" />
-                    </div>
-                  )}
+                  {(() => {
+                    const src = item?.uploadedPhotoUrls?.length ? item?.uploadedPhotoUrls?.[0] : item?.uploadedPhotoUrl;
+                    return src ? (
+                      <img
+                        src={src}
+                        alt="Product"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-400">
+                        <ShoppingBag className="w-6 h-6" />
+                      </div>
+                    );
+                  })()}
                 </div>
                 <div className="flex-1">
                   <h3 className="font-medium text-slate-800">{item?.productName}</h3>

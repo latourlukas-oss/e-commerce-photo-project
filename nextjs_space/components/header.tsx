@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { ShoppingCart, Menu, X, Home, Package, Info, Heart } from 'lucide-react';
+import { ShoppingCart, Menu, X, Home, Package, Info, Heart, Box, Magnet, ImageIcon } from 'lucide-react';
 import { useCart } from './cart-provider';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -13,7 +13,7 @@ export function Header() {
   const itemCount = cart?.items?.length ?? 0;
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
       <div className="max-w-[1200px] mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
@@ -26,6 +26,18 @@ export function Header() {
             <Link href="/" className="flex items-center gap-1 text-slate-600 hover:text-teal-600 transition-colors">
               <Home className="w-4 h-4" />
               <span>Home</span>
+            </Link>
+            <Link href="/photo-cube" className="flex items-center gap-1 text-slate-600 hover:text-teal-600 transition-colors">
+              <Box className="w-4 h-4" />
+              <span>Photo Cube</span>
+            </Link>
+            <Link href="/fridge-magnet" className="flex items-center gap-1 text-slate-600 hover:text-teal-600 transition-colors">
+              <Magnet className="w-4 h-4" />
+              <span>Fridge Magnets</span>
+            </Link>
+            <Link href="/canvas-print" className="flex items-center gap-1 text-slate-600 hover:text-teal-600 transition-colors">
+              <ImageIcon className="w-4 h-4" />
+              <span>Canvas Print</span>
             </Link>
             <Link href="/products" className="flex items-center gap-1 text-slate-600 hover:text-teal-600 transition-colors">
               <Package className="w-4 h-4" />
@@ -80,6 +92,30 @@ export function Header() {
               >
                 <Home className="w-5 h-5" />
                 <span>Home</span>
+              </Link>
+              <Link 
+                href="/photo-cube" 
+                className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 hover:bg-teal-50 text-slate-700"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Box className="w-5 h-5" />
+                <span>Photo Cube</span>
+              </Link>
+              <Link 
+                href="/fridge-magnet" 
+                className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 hover:bg-teal-50 text-slate-700"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Magnet className="w-5 h-5" />
+                <span>Fridge Magnets</span>
+              </Link>
+              <Link 
+                href="/canvas-print" 
+                className="flex items-center gap-2 p-3 rounded-lg bg-slate-50 hover:bg-teal-50 text-slate-700"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <ImageIcon className="w-5 h-5" />
+                <span>Canvas Print</span>
               </Link>
               <Link 
                 href="/products" 

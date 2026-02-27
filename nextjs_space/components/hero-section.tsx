@@ -1,49 +1,38 @@
 "use client";
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[85vh] flex items-center overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-teal-600 via-teal-700 to-teal-900">
-        <div className="absolute inset-0 bg-[url('/og-image.png')] bg-cover bg-center opacity-10" />
-      </div>
-      
-      <div className="relative max-w-[1200px] mx-auto px-4 py-20">
+    <section id="hero" className="relative py-16 md:py-20 bg-white">
+      <div className="max-w-[1200px] mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
           >
-            <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="w-6 h-6 text-orange-400" />
-              <span className="text-orange-300 font-medium tracking-widest">MEMORIES THAT MATTER</span>
-            </div>
-            
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-              <span className="text-orange-400">PEOPLES</span>PRINTS
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 mb-6">
+              <span className="text-teal-600">PEOPLES</span>PRINTS
             </h1>
             
-            <p className="text-xl text-teal-100 mb-8 leading-relaxed">
+            <p className="text-lg text-slate-600 mb-8 leading-relaxed">
               Transform your cherished memories into beautiful photo products while making a meaningful impact. Every purchase helps fight poverty in communities worldwide.
             </p>
             
             <div className="flex flex-wrap gap-4">
               <Link 
                 href="/products" 
-                className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl"
+                className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl"
               >
                 Shop Products
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <Link 
                 href="/mission" 
-                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-lg font-semibold transition-all border border-white/30"
+                className="inline-flex items-center gap-2 bg-white border-2 border-slate-300 text-slate-700 hover:border-teal-600 hover:text-teal-600 px-8 py-4 rounded-lg font-semibold transition-all"
               >
                 Our Mission
               </Link>
@@ -51,27 +40,28 @@ export function HeroSection() {
           </motion.div>
           
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             className="hidden md:block"
           >
-            <div className="relative">
-              <div className="absolute -inset-4 bg-orange-500/20 rounded-2xl blur-xl" />
-              <div className="relative aspect-square bg-gradient-to-br from-teal-500/30 to-orange-500/30 rounded-2xl p-8 backdrop-blur-sm border border-white/10">
-                <div className="grid grid-cols-2 gap-4 h-full">
-                  <div className="bg-white/10 rounded-lg flex items-center justify-center text-white/70 text-sm p-4">
-                    <span className="text-center">🖼️ Photo Cubes</span>
-                  </div>
-                  <div className="bg-white/10 rounded-lg flex items-center justify-center text-white/70 text-sm p-4">
-                    <span className="text-center">☕ Custom Mugs</span>
-                  </div>
-                  <div className="bg-white/10 rounded-lg flex items-center justify-center text-white/70 text-sm p-4">
-                    <span className="text-center">📱 Phone Cases</span>
-                  </div>
-                  <div className="bg-white/10 rounded-lg flex items-center justify-center text-white/70 text-sm p-4">
-                    <span className="text-center">🎨 Canvas Prints</span>
-                  </div>
+            <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100 text-center">
+                  <span className="text-2xl mb-2 block">🖼️</span>
+                  <span className="text-sm font-medium text-slate-700">Photo Cubes</span>
+                </div>
+                <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100 text-center">
+                  <span className="text-2xl mb-2 block">☕</span>
+                  <span className="text-sm font-medium text-slate-700">Custom Mugs</span>
+                </div>
+                <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100 text-center">
+                  <span className="text-2xl mb-2 block">📱</span>
+                  <span className="text-sm font-medium text-slate-700">Phone Cases</span>
+                </div>
+                <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100 text-center">
+                  <span className="text-2xl mb-2 block">🎨</span>
+                  <span className="text-sm font-medium text-slate-700">Canvas Prints</span>
                 </div>
               </div>
             </div>
