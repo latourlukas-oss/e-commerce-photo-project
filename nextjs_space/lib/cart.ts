@@ -6,6 +6,9 @@ export interface CartItem {
   quantity: number;
   uploadedPhotoUrl?: string;
   uploadedPhotoKey?: string;
+  /** For photo cube: multiple photo URLs (factory prints one per face) */
+  uploadedPhotoUrls?: string[];
+  uploadedPhotoKeys?: string[];
 }
 
 export interface Cart {

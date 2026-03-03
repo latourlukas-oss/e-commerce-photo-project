@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Upload, X, Check, ShoppingCart, Sparkles, ArrowLeft, Loader2 } from 'lucide-react';
+import { Upload, X, Check, ShoppingCart, Sparkles, ArrowLeft, Loader2, Images, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useCart } from '@/components/cart-provider';
 
@@ -16,6 +16,14 @@ interface Product {
   imageUrl: string;
 }
 
+const CUBE_OPTIONS = [
+  { faces: 5, label: '5 Pictures', description: 'Compact cube with 5 of your photos' },
+  { faces: 8, label: '8 Pictures', description: 'Classic cube with 8 photo faces' },
+  { faces: 12, label: '12 Pictures', description: 'Full cube with 12 photo faces' },
+] as const;
+
+const isPhotoCube = (p: Product) => p?.category === 'photo-cube' || p?.id === '1';
+
 export function ProductCustomizer({ product }: { product: Product }) {
   const router = useRouter();
   const { addItem } = useCart();
@@ -26,6 +34,8 @@ export function ProductCustomizer({ product }: { product: Product }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
+
+  const showCubeOptions = isPhotoCube(product);
 
   const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e?.target?.files?.[0];
@@ -149,6 +159,40 @@ export function ProductCustomizer({ product }: { product: Product }) {
         <ArrowLeft className="w-4 h-4" />
         Back to Products
       </Link>
+
+      {/* Photo cube: choose 5, 8, or 12 pictures */}
+      {showCubeOptions && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-12"
+        >
+          <h2 className="text-xl font-bold text-slate-800 mb-2">Choose your cube size</h2>
+          <p className="text-slate-600 mb-6">
+            Our cubes are assembled in China. Upload your photos and our factory will print and assemble your cube.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {CUBE_OPTIONS.map(({ faces, label, description }) => (
+              <Link
+                key={faces}
+                href={`/cube-upload/${faces}`}
+                className="block p-6 bg-slate-50 rounded-xl border border-slate-200 hover:border-teal-400 hover:shadow-md transition-all text-center group"
+              >
+                <Images className="w-10 h-10 text-teal-600 mx-auto mb-3 group-hover:scale-110 transition-transform" />
+                <h3 className="font-bold text-slate-800 mb-1">{label}</h3>
+                <p className="text-sm text-slate-600 mb-3">{description}</p>
+                <span className="inline-flex items-center gap-1 text-teal-600 font-semibold text-sm">
+                  Upload {faces} photos
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </Link>
+            ))}
+          </div>
+          <p className="text-slate-500 text-sm mt-6 border-t border-slate-200 pt-6">
+            Or upload a single photo below for a one-face customization.
+          </p>
+        </motion.div>
+      )}
 
       <div className="grid lg:grid-cols-2 gap-12">
         {/* Preview Section */}

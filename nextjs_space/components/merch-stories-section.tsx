@@ -22,7 +22,7 @@ export function MerchStoriesSection() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
 
   return (
-    <section ref={ref} className="py-20 bg-gradient-to-br from-teal-600 via-teal-700 to-teal-900">
+    <section id="merch-stories" ref={ref} className="py-16 md:py-20 bg-white">
       <div className="max-w-[1200px] mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -31,17 +31,17 @@ export function MerchStoriesSection() {
           className="flex flex-col md:flex-row md:items-end justify-between mb-12"
         >
           <div>
-            <span className="text-orange-300 font-medium mb-2 block flex items-center gap-2">
+            <span className="text-teal-600 font-medium mb-2 block flex items-center gap-2">
               <Heart className="w-4 h-4" />
               Merch & Stories
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-800">
               See the Impact & Wear the Mission
             </h2>
           </div>
           <Link 
             href="/merch-stories" 
-            className="inline-flex items-center gap-2 text-orange-300 hover:text-orange-200 font-medium mt-4 md:mt-0"
+            className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 font-medium mt-4 md:mt-0"
           >
             View All
             <ArrowRight className="w-4 h-4" />
@@ -50,7 +50,7 @@ export function MerchStoriesSection() {
 
         {/* Stories Row */}
         <div className="mb-12">
-          <h3 className="text-xl font-semibold text-white mb-6">Impact Stories</h3>
+          <h3 className="text-xl font-semibold text-slate-800 mb-6">Impact Stories</h3>
           <div className="grid md:grid-cols-3 gap-6">
             {stories.map((story, index) => (
               <motion.div
@@ -60,13 +60,13 @@ export function MerchStoriesSection() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
                 <Link href="/merch-stories">
-                  <div className="bg-white/10 backdrop-blur rounded-xl p-6 hover:bg-white/20 transition-all group cursor-pointer h-full">
-                    <div className="aspect-video bg-white/10 rounded-lg mb-4 flex items-center justify-center relative">
-                      <Play className="w-12 h-12 text-white opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" />
-                      <span className="absolute bottom-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded">Coming Soon</span>
+                  <div className="bg-slate-50 rounded-xl p-6 hover:bg-slate-100 border border-slate-100 transition-all group cursor-pointer h-full">
+                    <div className="aspect-video bg-slate-100 rounded-lg mb-4 flex items-center justify-center relative">
+                      <Play className="w-12 h-12 text-slate-400 group-hover:text-teal-600 transition-all" />
+                      <span className="absolute bottom-2 left-2 bg-slate-600 text-white text-xs px-2 py-1 rounded">Coming Soon</span>
                     </div>
-                    <h4 className="text-lg font-semibold text-white mb-1">{story?.title}</h4>
-                    <p className="text-teal-100 text-sm">{story?.description}</p>
+                    <h4 className="text-lg font-semibold text-slate-800 mb-1">{story?.title}</h4>
+                    <p className="text-slate-600 text-sm">{story?.description}</p>
                   </div>
                 </Link>
               </motion.div>
@@ -76,7 +76,7 @@ export function MerchStoriesSection() {
 
         {/* Merch Row */}
         <div>
-          <h3 className="text-xl font-semibold text-white mb-6">Merchandise</h3>
+          <h3 className="text-xl font-semibold text-slate-800 mb-6">Merchandise</h3>
           <div className="grid md:grid-cols-3 gap-6">
             {merchItems.map((item, index) => (
               <motion.div
@@ -86,19 +86,19 @@ export function MerchStoriesSection() {
                 transition={{ duration: 0.6, delay: (index + 3) * 0.1 }}
               >
                 <Link href="/merch-stories">
-                  <div className="bg-white/10 backdrop-blur rounded-xl p-6 hover:bg-white/20 transition-all group cursor-pointer h-full">
-                    <div className="aspect-square rounded-lg mb-4 relative overflow-hidden bg-white">
+                  <div className="bg-slate-50 rounded-xl p-6 hover:bg-slate-100 border border-slate-100 transition-all group cursor-pointer h-full">
+                    <div className="aspect-square rounded-lg mb-4 relative overflow-hidden bg-white border border-slate-100">
                       <Image 
                         src={item.image} 
                         alt={item.name} 
                         fill 
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                      <span className="absolute bottom-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded font-medium">Coming Soon</span>
+                      <span className="absolute bottom-2 left-2 bg-teal-600 text-white text-xs px-2 py-1 rounded font-medium">Coming Soon</span>
                     </div>
-                    <h4 className="text-lg font-semibold text-white mb-1">{item?.name}</h4>
-                    <p className="text-teal-100 text-sm mb-3">{item?.description}</p>
-                    <span className="text-xl font-bold text-orange-300">${item?.price?.toFixed?.(2) ?? '0.00'}</span>
+                    <h4 className="text-lg font-semibold text-slate-800 mb-1">{item?.name}</h4>
+                    <p className="text-slate-600 text-sm mb-3">{item?.description}</p>
+                    <span className="text-xl font-bold text-teal-600">${item?.price?.toFixed?.(2) ?? '0.00'}</span>
                   </div>
                 </Link>
               </motion.div>

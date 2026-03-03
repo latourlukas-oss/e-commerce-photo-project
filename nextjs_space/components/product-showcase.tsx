@@ -17,7 +17,7 @@ export function ProductShowcase() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
 
   return (
-    <section ref={ref} className="py-20 bg-slate-100">
+    <section id="product-showcase" ref={ref} className="py-16 md:py-20 bg-white">
       <div className="max-w-[1200px] mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

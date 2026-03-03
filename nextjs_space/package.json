@@ -5,6 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:local": "PORT=3005 next start",
     "lint": "next lint"
   },
   "prisma": {
