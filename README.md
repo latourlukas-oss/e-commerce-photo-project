@@ -70,9 +70,17 @@ npx prisma db seed
 
 ---
 
-## Folder structure
+## One-line start (from Peoples Print root)
 
-- **Peoples Print** (this folder) – project root, git repo
-- **nextjs_space** – the Next.js app; all `npm` commands run from inside `nextjs_space`
+From this folder you can also run:
 
-For more detail (env vars, Stripe, etc.), see **nextjs_space/README.md**.
+```bash
+npm run dev
+```
+
+That runs the app from `nextjs_space` with a clean build. Use the URL Next.js prints.
+
+---
+
+## For AI agents
+See **AGENTS.md** in this folder for project rules and how to run/verify the site.

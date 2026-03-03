@@ -1,0 +1,10 @@
+{
+  "name": "peoples-print",
+  "private": true,
+  "description": "Peoples Print – run the app from nextjs_space",
+  "scripts": {
+    "dev": "cd nextjs_space && rm -rf .next && npm run dev",
+    "build": "cd nextjs_space && npm run build",
+    "postinstall": "echo 'Run: cd nextjs_space && npm install --legacy-peer-deps'"
+  }
+}
