@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { ProductSidebar } from '@/components/product-sidebar';
 import { CartProvider } from '@/components/cart-provider';
 import { SectionSelector } from '@/components/section-selector';
 import Script from 'next/script';
@@ -48,7 +49,8 @@ export default function RootLayout({
       <body className={`${inter.className} bg-white min-h-screen`} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <CartProvider>
-            <div className="flex flex-col min-h-screen bg-white pb-20">
+            <ProductSidebar />
+            <div className="flex flex-col min-h-screen bg-white pb-20 pl-14">
               <Header />
               <main className="flex-1 bg-white">
                 {children}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
-const SECTIONS = ['hero', 'mission-cards', 'product-showcase', 'impact', 'cta', 'merch-stories'];
+const SECTIONS = ['hero', 'mission-cards', 'product-showcase', 'cta', 'merch-stories'];
 const SECTION_SELECTOR = SECTIONS.map((id) => `#${id}`).join(', ');
 
 export function SectionSelector() {

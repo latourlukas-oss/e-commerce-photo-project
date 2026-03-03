@@ -6,7 +6,6 @@ const SECTION_TO_FILE: Record<string, string> = {
   'hero': 'components/hero-section.tsx',
   'mission-cards': 'components/mission-section.tsx',
   'product-showcase': 'components/product-showcase.tsx',
-  'impact': 'components/impact-section.tsx',
   'cta': 'components/cube-upload-section.tsx',
   'merch-stories': 'components/merch-stories-section.tsx',
 };

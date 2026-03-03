@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:3010": "prisma generate && PORT=3010 next dev",
     "build": "next build",
     "start": "next start",
     "start:local": "PORT=3005 next start",

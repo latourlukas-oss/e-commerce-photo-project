@@ -1,7 +1,6 @@
 import { ProductGrid } from './product-grid';
 
 const PRODUCTS = [
-  { id: '1', name: 'Classic Photo Cube', description: 'A beautiful 3D rotating cube featuring your cherished photos.', price: 24.99, category: 'photo-cube', imageUrl: '/products/photo-cube.jpg' },
   { id: '2', name: 'Memory Keychain', description: 'Keep your loved ones close wherever you go.', price: 12.99, category: 'keychain', imageUrl: '/products/keychain.jpg' },
   { id: '3', name: 'Custom Fridge Magnet', description: 'Display your favorite moments on any magnetic surface.', price: 9.99, category: 'fridge-magnet', imageUrl: '/products/fridge-magnet.jpg' },
   { id: '4', name: 'Premium Canvas Print', description: 'Gallery-quality canvas prints for your walls.', price: 49.99, category: 'canvas-print', imageUrl: '/products/canvas.jpg' },

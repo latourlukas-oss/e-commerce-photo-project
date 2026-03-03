@@ -14,14 +14,30 @@ PeoplesPrints is a photo e-commerce platform where customers can create custom p
 - **Stripe Payment Integration**: Secure payment processing
 - **Order Management**: All orders saved to database
 
+## Quick start (run the app in one go)
+
+From the repo root, run:
+
+```bash
+cd nextjs_space
+npm install --legacy-peer-deps && npx prisma generate && PORT=3010 npm run dev
+```
+
+Then open **http://localhost:3010**.  
+If port 3010 is in use, run `PORT=3020 npm run dev` (or any free port) instead.
+
+---
+
 ## Setup Instructions
 
 ### 1. Install Dependencies
 
 ```bash
 cd nextjs_space
-yarn install
+npm install --legacy-peer-deps
 ```
+
+(If you use Yarn: `yarn install` — the app has an ESLint peer dependency quirk; npm with `--legacy-peer-deps` avoids the conflict.)
 
 ### 2. Configure Environment Variables
 
@@ -61,21 +77,27 @@ For production, set up a webhook to handle payment events:
 4. Select events: `checkout.session.completed`, `checkout.session.expired`
 5. Copy the **Signing secret** and add it as `STRIPE_WEBHOOK_SECRET`
 
-### 5. Initialize Database
+### 5. Generate Prisma client (required before first run)
 
 ```bash
-yarn prisma generate
-yarn prisma db push
-yarn prisma db seed
+npx prisma generate
+```
+
+Without this, the app will 404 or fail to build. Then optionally push schema and seed:
+
+```bash
+npx prisma db push
+npx prisma db seed
 ```
 
 ### 6. Run Development Server
 
 ```bash
-yarn dev
+npm run dev
 ```
 
-Visit `http://localhost:3000` to see the site.
+Or use a specific port if 3000 is busy: `PORT=3010 npm run dev`.  
+Visit the URL shown in the terminal (e.g. `http://localhost:3010`).
 
 ## Project Structure
 
