@@ -2,17 +2,18 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Package, Box, Key, Magnet, Image as ImageIcon } from 'lucide-react';
+import { Package, Box, Key, Magnet, Image as ImageIcon, Layers } from 'lucide-react';
+
+const CLOSE_DELAY_MS = 250;
 
 const PRODUCTS = [
+  { name: 'Transparent Prints', href: '/transparent-prints', icon: Layers },
   { name: 'Photo Cube', href: '/photo-cube', icon: Box },
   { name: 'Keychain', href: '/keychain', icon: Key },
   { name: 'Fridge Magnet', href: '/fridge-magnet', icon: Magnet },
   { name: 'Canvas Print', href: '/canvas-print', icon: ImageIcon },
   { name: 'All Products', href: '/products', icon: Package },
 ];
-
-const CLOSE_DELAY_MS = 250;
 
 export function ProductSidebar() {
   const [open, setOpen] = useState(false);
@@ -78,17 +79,15 @@ export function ProductSidebar() {
           <p className="px-4 pb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
             All products
           </p>
-          <nav className="flex flex-1 flex-col gap-0.5 px-2">
+          <nav className="flex flex-1 flex-col gap-0.5 px-2 overflow-y-auto min-h-0">
             {PRODUCTS.map((product) => {
               const Icon = product.icon;
-              const isPhotoCube = product.name === 'Photo Cube';
               return (
                 <Link
-                  key={product.name}
+                  key={product.href}
                   href={product.href}
                   className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-700 transition-colors hover:bg-teal-50 hover:text-teal-700"
                   onClick={() => setOpen(false)}
-                  {...(isPhotoCube ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0 text-slate-400" />
                   <span className="font-medium">{product.name}</span>

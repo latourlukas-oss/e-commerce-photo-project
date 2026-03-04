@@ -9,6 +9,7 @@ import { CubeUploadSection } from '@/components/cube-upload-section';
 const GALLERY_IMAGES = [
   '/products/photo-cube/cube-1.png',
   '/products/photo-cube/cube-2.png',
+  '/products/photo-cube/cube-3.png',
   '/products/photo-cube/cube-4.png',
   '/products/photo-cube/cube-5.png',
   '/products/photo-cube/cube-6.png',
@@ -17,9 +18,9 @@ const GALLERY_IMAGES = [
   '/products/photo-cube/cube-9.png',
 ];
 
+// Only include videos that exist in public/products/photo-cube/
 const GALLERY_VIDEOS = [
   '/products/photo-cube/video-1.mov',
-  '/products/photo-cube/video-2.mov',
 ];
 
 type GalleryItem = { type: 'image'; src: string } | { type: 'video'; src: string };
@@ -49,7 +50,7 @@ export default function PhotoCubePage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" id="photo-cube-page">
       <div className="max-w-[1200px] mx-auto px-4 py-8">
         <Link
           href="/"

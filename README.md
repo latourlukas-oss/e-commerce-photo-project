@@ -33,20 +33,14 @@ npx prisma generate
 
 ## 4. Start the dev server
 
-```bash
-cd "/Users/jillsander/Desktop/Peoples Print/nextjs_space"
-npm run dev:3010
-```
-
-Then open in your browser: **http://localhost:3010**
-
-If port 3010 is in use, run instead:
+From the **Peoples Print** folder run:
 
 ```bash
-PORT=3020 npm run dev
+cd "/Users/jillsander/Desktop/Peoples Print"
+npm run start
 ```
 
-and open **http://localhost:3020**.
+The terminal will print a line like **http://localhost:3030** (the port may be 3030, 3031, 3032, etc. if one is in use). Open that URL in your browser.
 
 ---
 

@@ -52,7 +52,7 @@ export default function RootLayout({
             <ProductSidebar />
             <div className="flex flex-col min-h-screen bg-white pb-20 pl-14">
               <Header />
-              <main className="flex-1 bg-white">
+              <main className="flex-1 bg-white min-h-0 overflow-y-auto">
                 {children}
               </main>
               <Footer />

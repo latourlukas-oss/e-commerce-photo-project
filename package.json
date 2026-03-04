@@ -4,6 +4,8 @@
   "description": "Peoples Print – run the app from nextjs_space",
   "scripts": {
     "dev": "cd nextjs_space && rm -rf .next && npm run dev",
+    "dev:3010": "cd nextjs_space && rm -rf .next && sh scripts/run-dev-3010.sh",
+    "start": "cd nextjs_space && rm -rf .next && node scripts/dev-with-port.js",
     "build": "cd nextjs_space && npm run build",
     "postinstall": "echo 'Run: cd nextjs_space && npm install --legacy-peer-deps'"
   }

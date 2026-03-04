@@ -30,7 +30,7 @@ Use the URL Next.js prints (e.g. http://localhost:3000). If the port is in use, 
 ## Key routes
 
 - Homepage: `/` (merch only)
-- Photo Cube page: `/photo-cube` (product sidebar → Photo Cube opens it in a new tab)
+- Photo Cube page: `/photo-cube` (product sidebar → Photo Cube goes to this page)
 - Products grid: `/products` (no Photo Cube in the list; only via sidebar)
 
 ## Folder layout
