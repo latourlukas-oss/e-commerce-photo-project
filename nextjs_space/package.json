@@ -2,7 +2,7 @@
   "name": "app",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "ulimit -n 10240 2>/dev/null; next dev",
     "dev:3010": "prisma generate && PORT=3010 next dev",
     "dev:3010-fresh": "sh scripts/run-dev-3010.sh",
     "dev:open": "node scripts/dev-with-port.js",

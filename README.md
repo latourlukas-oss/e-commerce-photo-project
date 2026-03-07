@@ -44,7 +44,7 @@ The terminal will print a line like **http://localhost:3030** (the port may be 3
 
 ---
 
-## One-line “run everything” (after you’ve already run step 2 at least once)
+## One-line "run everything" (after you've already run step 2 at least once)
 
 From this folder:
 

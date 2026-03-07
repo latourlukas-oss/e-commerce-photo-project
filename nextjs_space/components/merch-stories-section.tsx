@@ -2,8 +2,6 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
 import { ArrowRight, Play, Heart } from 'lucide-react';
 
 const stories = [
@@ -19,17 +17,10 @@ const merchItems = [
 ];
 
 export function MerchStoriesSection() {
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
-
   return (
-    <section id="merch-stories" ref={ref} className="py-16 md:py-20 bg-white">
+    <section id="merch-stories" className="py-16 md:py-20 bg-white">
       <div className="max-w-[1200px] mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col md:flex-row md:items-end justify-between mb-12"
-        >
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
           <div>
             <span className="text-teal-600 font-medium mb-2 block flex items-center gap-2">
               <Heart className="w-4 h-4" />
@@ -39,26 +30,20 @@ export function MerchStoriesSection() {
               See the Impact & Wear the Mission
             </h2>
           </div>
-          <Link 
-            href="/merch-stories" 
+          <Link
+            href="/merch-stories"
             className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 font-medium mt-4 md:mt-0"
           >
             View All
             <ArrowRight className="w-4 h-4" />
           </Link>
-        </motion.div>
+        </div>
 
-        {/* Stories Row */}
         <div className="mb-12">
           <h3 className="text-xl font-semibold text-slate-800 mb-6">Impact Stories</h3>
           <div className="grid md:grid-cols-3 gap-6">
             {stories.map((story, index) => (
-              <motion.div
-                key={story?.title ?? index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-              >
+              <div key={story?.title ?? index}>
                 <Link href="/merch-stories">
                   <div className="bg-slate-50 rounded-xl p-6 hover:bg-slate-100 border border-slate-100 transition-all group cursor-pointer h-full">
                     <div className="aspect-video bg-slate-100 rounded-lg mb-4 flex items-center justify-center relative">
@@ -69,29 +54,23 @@ export function MerchStoriesSection() {
                     <p className="text-slate-600 text-sm">{story?.description}</p>
                   </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
 
-        {/* Merch Row */}
         <div>
           <h3 className="text-xl font-semibold text-slate-800 mb-6">Merchandise</h3>
           <div className="grid md:grid-cols-3 gap-6">
             {merchItems.map((item, index) => (
-              <motion.div
-                key={item?.name ?? index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: (index + 3) * 0.1 }}
-              >
+              <div key={item?.name ?? index}>
                 <Link href="/merch-stories">
                   <div className="bg-slate-50 rounded-xl p-6 hover:bg-slate-100 border border-slate-100 transition-all group cursor-pointer h-full">
                     <div className="aspect-square rounded-lg mb-4 relative overflow-hidden bg-white border border-slate-100">
-                      <Image 
-                        src={item.image} 
-                        alt={item.name} 
-                        fill 
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <span className="absolute bottom-2 left-2 bg-teal-600 text-white text-xs px-2 py-1 rounded font-medium">Coming Soon</span>
@@ -101,7 +80,7 @@ export function MerchStoriesSection() {
                     <span className="text-xl font-bold text-teal-600">${item?.price?.toFixed?.(2) ?? '0.00'}</span>
                   </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

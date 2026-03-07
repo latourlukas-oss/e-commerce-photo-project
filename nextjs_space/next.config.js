@@ -9,6 +9,15 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
   images: { unoptimized: true },
+  webpack: (config, { dev }) => {
+    if (dev) {
+      config.watchOptions = {
+        ignored: ['**/node_modules/**', '**/.next/**', '**/.git/**'],
+        aggregateTimeout: 500,
+      };
+    }
+    return config;
+  },
 };
 
 module.exports = nextConfig;
