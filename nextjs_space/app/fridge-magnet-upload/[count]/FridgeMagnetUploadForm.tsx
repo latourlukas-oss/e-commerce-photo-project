@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Upload, X, Check, ShoppingCart, ArrowLeft, Loader2 } from 'lucide-react';
@@ -67,11 +67,22 @@ function clampCount(n: number): number {
   return Math.min(25, Math.max(1, Math.floor(n)));
 }
 
+const SIZE_LABELS: Record<string, string> = {
+  '4x6': '4×6"',
+  '5x7': '5×7"',
+  '8x10': '8×10"',
+  '4x4': '4×4" square',
+  '5x5': '5×5" square',
+};
+
 export function FridgeMagnetUploadForm() {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const { addItem } = useCart();
   const count = clampCount(Number(params?.count) || 5);
+  const sizeId = searchParams?.get?.('size') ?? '';
+  const sizeLabel = SIZE_LABELS[sizeId] || sizeId || null;
 
   const [urls, setUrls] = useState<(string | null)[]>(() => Array(count).fill(null));
   const [keys, setKeys] = useState<string[]>(() => Array(count).fill(''));
@@ -136,7 +147,7 @@ export function FridgeMagnetUploadForm() {
     const keyList = keys.filter(Boolean);
     addItem({
       productId: FRIDGE_MAGNET_PRODUCT.id,
-      productName: FRIDGE_MAGNET_PRODUCT.name + ` (${count} photos)`,
+      productName: FRIDGE_MAGNET_PRODUCT.name + (sizeLabel ? ` (${count} photos, ${sizeLabel})` : ` (${count} photos)`),
       productImage: FRIDGE_MAGNET_PRODUCT.imageUrl,
       price: FRIDGE_MAGNET_PRODUCT.price,
       quantity: 1,
@@ -160,6 +171,7 @@ export function FridgeMagnetUploadForm() {
       <div className="max-w-3xl mx-auto">
         <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-2">
           Upload {count} photo{count !== 1 ? 's' : ''} for your fridge magnets
+          {sizeLabel && <span className="text-teal-700 font-medium"> · {sizeLabel}</span>}
         </h1>
         <p className="text-slate-600 mb-8">
           One image per magnet. We&apos;ll print and ship your set.

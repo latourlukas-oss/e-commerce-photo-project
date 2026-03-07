@@ -2,23 +2,36 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { ArrowLeft, ArrowRight, Magnet, ChevronDown } from 'lucide-react';
 
 const GALLERY_IMAGES = [
-  { src: '/products/fridge-magnet/frame-fridge.png', alt: 'Magnetic photo frame on fridge' },
-  { src: '/products/fridge-magnet/frame-wall.png', alt: 'Acrylic frame on wall' },
-  { src: '/products/fridge-magnet/frame-wood.png', alt: 'Frame on wood surface' },
-  { src: '/products/fridge-magnet/gemini-1.png', alt: 'Magnetic frames with family photos' },
-  { src: '/products/fridge-magnet/gemini-2.png', alt: 'Clear acrylic magnetic frames collage' },
+  { src: '/products/fridge-magnet/frame-1.png', alt: 'Magnetic photo frames – clear acrylic on fridge' },
+  { src: '/products/fridge-magnet/frame-2.png', alt: 'Magnetic frames with family photos' },
+  { src: '/products/fridge-magnet/frame-3.png', alt: 'Acrylic magnetic frame display' },
+  { src: '/products/fridge-magnet/frame-4.png', alt: 'Magnetic photo frames collage' },
+  { src: '/products/fridge-magnet/frame-5.png', alt: 'Clear acrylic frames on metal surface' },
+  { src: '/products/fridge-magnet/frame-6.png', alt: 'Clear acrylic magnetic frames on refrigerator' },
+  { src: '/products/fridge-magnet/frame-7.png', alt: 'Magnetic frames on wall with family photos' },
+  { src: '/products/fridge-magnet/frame-8.png', alt: 'Clear acrylic magnetic frames – mix of sizes on white surface' },
+  { src: '/products/fridge-magnet/frame-9.png', alt: 'Magnetic photo frames on fridge – family gallery' },
 ];
 
 const PHOTO_COUNTS = Array.from({ length: 25 }, (_, i) => i + 1);
 
+const FRAME_SIZES = [
+  { id: '4x6', label: '4×6"', description: 'Standard' },
+  { id: '5x7', label: '5×7"', description: 'Classic' },
+  { id: '8x10', label: '8×10"', description: 'Large' },
+  { id: '4x4', label: '4×4" square', description: 'Square' },
+  { id: '5x5', label: '5×5" square', description: 'Square' },
+] as const;
+
 export default function FridgeMagnetPage() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedCount, setSelectedCount] = useState(5);
+  const [selectedSize, setSelectedSize] = useState<string>(FRAME_SIZES[0].id);
   const selected = GALLERY_IMAGES[selectedIndex];
+  const sizeOption = FRAME_SIZES.find((s) => s.id === selectedSize) ?? FRAME_SIZES[0];
 
   return (
     <div className="min-h-screen bg-white" id="fridge-magnet-page">
@@ -33,32 +46,29 @@ export default function FridgeMagnetPage() {
 
         <div className="grid md:grid-cols-2 gap-10 lg:gap-16 mb-16">
           <div className="space-y-4">
-            {/* Main display */}
-            <div className="relative aspect-square bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-inner">
+            {/* Main display - 4:3 so product shots aren't squeezed into a square */}
+            <div className="relative w-full aspect-[4/3] bg-slate-50 rounded-2xl border border-slate-200 shadow-inner flex items-center justify-center overflow-hidden">
               {selected && (
-                <Image
+                <img
                   src={selected.src}
                   alt={selected.alt}
-                  fill
-                  className="object-contain p-2"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  priority
+                  className="max-w-full max-h-full w-auto h-auto object-contain p-3"
                 />
               )}
             </div>
 
-            {/* Thumbnail bar */}
-            <div className="flex gap-2 overflow-x-auto pb-2">
+            {/* Thumbnail bar - full images visible, no crop */}
+            <div className="flex gap-2 overflow-x-auto overflow-y-visible items-center min-h-[100px] py-1">
               {GALLERY_IMAGES.map((img, i) => (
                 <button
                   key={img.src}
                   type="button"
                   onClick={() => setSelectedIndex(i)}
-                  className={`relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
+                  className={`flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border-2 transition-colors bg-slate-100 flex items-center justify-center ${
                     selectedIndex === i ? 'border-teal-600 ring-2 ring-teal-200' : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
-                  <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="64px" />
+                  <img src={img.src} alt={img.alt} className="max-w-full max-h-full w-auto h-auto object-contain" />
                 </button>
               ))}
             </div>
@@ -97,6 +107,25 @@ export default function FridgeMagnetPage() {
             </ul>
             <p className="text-2xl font-bold text-slate-800 mb-6">From $9.99</p>
 
+            <p className="text-sm font-semibold text-slate-700 mb-2">Frame size</p>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {FRAME_SIZES.map((size) => (
+                <button
+                  key={size.id}
+                  type="button"
+                  onClick={() => setSelectedSize(size.id)}
+                  className={`px-4 py-2.5 rounded-xl border-2 text-sm font-medium transition-all ${
+                    selectedSize === size.id
+                      ? 'border-teal-600 bg-teal-50 text-teal-800'
+                      : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                  }`}
+                >
+                  {size.label}
+                  <span className="text-slate-500 font-normal ml-1">({size.description})</span>
+                </button>
+              ))}
+            </div>
+
             <p className="text-sm font-semibold text-slate-700 mb-3">How many photos?</p>
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <div className="relative">
@@ -118,10 +147,10 @@ export default function FridgeMagnetPage() {
                 </span>
               </div>
               <Link
-                href={`/fridge-magnet-upload/${selectedCount}`}
+                href={`/fridge-magnet-upload/${selectedCount}?size=${encodeURIComponent(selectedSize)}`}
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:border-teal-600 hover:bg-teal-50 hover:text-teal-800 font-medium transition-all"
               >
-                Upload {selectedCount} photo{selectedCount !== 1 ? 's' : ''}
+                Upload {selectedCount} photo{selectedCount !== 1 ? 's' : ''} ({sizeOption.label})
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
