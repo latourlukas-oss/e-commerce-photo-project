@@ -51,7 +51,7 @@ export default function PhotoCubePage() {
 
   return (
     <div className="min-h-screen bg-white" id="photo-cube-page">
-      <div className="max-w-[1200px] mx-auto px-4 py-8">
+      <div className="max-w-[1600px] mx-auto px-6 xl:px-10 py-8">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-slate-600 hover:text-teal-600 mb-8"
@@ -60,10 +60,10 @@ export default function PhotoCubePage() {
           Back to Home
         </Link>
 
-        <div className="grid md:grid-cols-2 gap-10 lg:gap-16 mb-16">
-          <div className="space-y-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-[1.15fr_1fr] gap-10 xl:gap-16 mb-16">
+          <div className="space-y-4 min-w-0">
             {/* Main display: image or playing video */}
-            <div className="relative aspect-square bg-[#f8f6f3] rounded-2xl overflow-hidden border border-amber-900/10 shadow-inner">
+            <div className="relative aspect-square min-h-[360px] lg:min-h-[420px] bg-[#f8f6f3] rounded-2xl overflow-hidden border border-amber-900/10 shadow-inner">
               {displayVideoIndex != null && GALLERY_ITEMS[displayVideoIndex]?.type === 'video' ? (
                 <video
                   ref={handleVideoRef(displayVideoIndex)}

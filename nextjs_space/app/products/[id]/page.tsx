@@ -27,7 +27,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
 
   return (
     <div className="py-12">
-      <div className="max-w-[1200px] mx-auto px-4">
+      <div className="max-w-[1600px] mx-auto px-6 xl:px-10">
         <ProductCustomizer product={{
           id: product?.id ?? '',
           name: product?.name ?? '',

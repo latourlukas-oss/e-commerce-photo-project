@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@next/swc-wasm-nodejs": "13.5.1",
+    "@types/leaflet": "^1.9.21",
     "@types/node": "20.6.2",
     "@types/react": "18.2.22",
     "@types/react-dom": "18.2.7",
@@ -93,6 +94,7 @@
     "input-otp": "1.2.4",
     "jotai": "2.6.0",
     "jsonwebtoken": "9.0.2",
+    "leaflet": "^1.9.4",
     "lodash": "4.17.21",
     "lucide-react": "0.446.0",
     "mapbox-gl": "1.13.3",

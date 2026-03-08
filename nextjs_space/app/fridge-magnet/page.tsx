@@ -26,16 +26,25 @@ const FRAME_SIZES = [
   { id: '5x5', label: '5×5" square', description: 'Square' },
 ] as const;
 
+const initialQuantities: Record<string, number> = {
+  '4x6': 0, '5x7': 0, '8x10': 0, '4x4': 0, '5x5': 0,
+};
+
 export default function FridgeMagnetPage() {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [selectedCount, setSelectedCount] = useState(5);
-  const [selectedSize, setSelectedSize] = useState<string>(FRAME_SIZES[0].id);
+  const [quantitiesBySize, setQuantitiesBySize] = useState<Record<string, number>>(initialQuantities);
   const selected = GALLERY_IMAGES[selectedIndex];
-  const sizeOption = FRAME_SIZES.find((s) => s.id === selectedSize) ?? FRAME_SIZES[0];
+
+  const setQuantity = (sizeId: string, value: number) => {
+    setQuantitiesBySize((prev) => ({ ...prev, [sizeId]: value }));
+  };
+
+  const totalPhotos = FRAME_SIZES.reduce((sum, s) => sum + (quantitiesBySize[s.id] ?? 0), 0);
+  const sizesWithQuantity = FRAME_SIZES.filter((s) => (quantitiesBySize[s.id] ?? 0) > 0);
 
   return (
     <div className="min-h-screen bg-white" id="fridge-magnet-page">
-      <div className="max-w-[1200px] mx-auto px-4 py-8">
+      <div className="max-w-[1600px] mx-auto px-6 xl:px-10 py-8">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-slate-600 hover:text-teal-600 mb-8"
@@ -44,15 +53,15 @@ export default function FridgeMagnetPage() {
           Back to Home
         </Link>
 
-        <div className="grid md:grid-cols-2 gap-10 lg:gap-16 mb-16">
-          <div className="space-y-4">
-            {/* Main display - 4:3 so product shots aren't squeezed into a square */}
-            <div className="relative w-full aspect-[4/3] bg-slate-50 rounded-2xl border border-slate-200 shadow-inner flex items-center justify-center overflow-hidden">
+        <div className="grid md:grid-cols-2 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-12 xl:gap-16 mb-16">
+          <div className="space-y-4 min-w-0">
+            {/* Main display - larger area for product image */}
+            <div className="relative w-full aspect-[4/3] bg-slate-50 rounded-2xl border border-slate-200 shadow-inner flex items-center justify-center overflow-hidden min-h-[360px] lg:min-h-[420px]">
               {selected && (
                 <img
                   src={selected.src}
                   alt={selected.alt}
-                  className="max-w-full max-h-full w-auto h-auto object-contain p-3"
+                  className="max-w-full max-h-full w-auto h-auto object-contain p-1"
                 />
               )}
             </div>
@@ -107,53 +116,62 @@ export default function FridgeMagnetPage() {
             </ul>
             <p className="text-2xl font-bold text-slate-800 mb-6">From $9.99</p>
 
-            <p className="text-sm font-semibold text-slate-700 mb-2">Frame size</p>
-            <div className="flex flex-wrap gap-2 mb-4">
+            <p className="text-sm font-semibold text-slate-700 mb-3">Choose how many photos you want in each size</p>
+            <p className="text-slate-500 text-sm mb-4">Each size has its own quantity. Select from the dropdowns below — all listed underneath each other.</p>
+
+            <div className="border border-slate-200 rounded-xl bg-slate-50/50 p-4 mb-6">
               {FRAME_SIZES.map((size) => (
-                <button
+                <div
                   key={size.id}
-                  type="button"
-                  onClick={() => setSelectedSize(size.id)}
-                  className={`px-4 py-2.5 rounded-xl border-2 text-sm font-medium transition-all ${
-                    selectedSize === size.id
-                      ? 'border-teal-600 bg-teal-50 text-teal-800'
-                      : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
-                  }`}
+                  className="flex items-center justify-between gap-4 py-3 border-b border-slate-200 last:border-b-0"
                 >
-                  {size.label}
-                  <span className="text-slate-500 font-normal ml-1">({size.description})</span>
-                </button>
+                  <span className="font-medium text-slate-800">{size.label}</span>
+                  <div className="relative">
+                    <select
+                      value={quantitiesBySize[size.id] === 0 ? '' : quantitiesBySize[size.id]}
+                      onChange={(e) => setQuantity(size.id, e.target.value === '' ? 0 : Number(e.target.value))}
+                      className="appearance-none bg-white border border-slate-200 rounded-lg py-2.5 pl-3 pr-9 text-slate-800 font-medium cursor-pointer focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none min-w-[110px]"
+                      aria-label={`Amount for ${size.label}`}
+                    >
+                      <option value="">Select…</option>
+                      {PHOTO_COUNTS.map((n) => (
+                        <option key={n} value={n}>
+                          {n} photo{n === 1 ? '' : 's'}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400">
+                      <ChevronDown className="w-4 h-4" />
+                    </span>
+                  </div>
+                </div>
               ))}
             </div>
 
-            <p className="text-sm font-semibold text-slate-700 mb-3">How many photos?</p>
-            <div className="flex flex-wrap items-center gap-3 mb-4">
-              <div className="relative">
-                <select
-                  id="fridge-magnet-count"
-                  value={selectedCount}
-                  onChange={(e) => setSelectedCount(Number(e.target.value))}
-                  className="appearance-none bg-slate-50 border border-slate-200 rounded-lg py-3 pl-4 pr-10 text-slate-800 font-medium cursor-pointer focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none min-w-[140px]"
-                  aria-label="Select number of photos (1 to 25)"
-                >
-                  {PHOTO_COUNTS.map((n) => (
-                    <option key={n} value={n}>
-                      {n} {n === 1 ? 'photo' : 'photos'}
-                    </option>
-                  ))}
-                </select>
-                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
-                  <ChevronDown className="w-5 h-5" />
-                </span>
-              </div>
-              <Link
-                href={`/fridge-magnet-upload/${selectedCount}?size=${encodeURIComponent(selectedSize)}`}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:border-teal-600 hover:bg-teal-50 hover:text-teal-800 font-medium transition-all"
-              >
-                Upload {selectedCount} photo{selectedCount !== 1 ? 's' : ''} ({sizeOption.label})
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
+            {totalPhotos > 0 ? (
+              <>
+                <p className="text-sm font-semibold text-slate-700 mb-2">
+                  Total: {totalPhotos} photo{totalPhotos !== 1 ? 's' : ''}
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {sizesWithQuantity.map((size) => {
+                    const count = quantitiesBySize[size.id] ?? 0;
+                    return (
+                      <Link
+                        key={size.id}
+                        href={`/fridge-magnet-upload/${count}?size=${encodeURIComponent(size.id)}`}
+                        className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border-2 border-teal-600 bg-teal-50 text-teal-800 font-medium hover:bg-teal-100 transition-colors"
+                      >
+                        Upload {count} photo{count !== 1 ? 's' : ''} ({size.label})
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <p className="text-slate-500 text-sm">Select at least one photo above to see upload options.</p>
+            )}
           </div>
         </div>
       </div>

@@ -9,6 +9,25 @@ export interface CartItem {
   /** For photo cube: multiple photo URLs (factory prints one per face) */
   uploadedPhotoUrls?: string[];
   uploadedPhotoKeys?: string[];
+  /** For map plaque: area of the map to print (center + zoom + search query) */
+  mapPrintData?: {
+    lat: number;
+    lng: number;
+    zoom: number;
+    searchQuery: string;
+  };
+  /** For album plaque: photo + song */
+  albumPrintData?: {
+    photoUrl: string | null;
+    songTitle: string;
+    artist: string;
+  };
+  /** For night sky plaque */
+  nightSkyPrintData?: {
+    date: string;
+    time: string;
+    location: string;
+  };
 }
 
 export interface Cart {

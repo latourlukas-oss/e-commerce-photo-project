@@ -9,7 +9,7 @@ const PRODUCTS = [
 export default function ProductsPage() {
   return (
     <div className="py-12">
-      <div className="max-w-[1200px] mx-auto px-4">
+      <div className="max-w-[1600px] mx-auto px-6 xl:px-10">
         <div className="text-center mb-12">
           <span className="text-teal-600 font-medium mb-2 block">Our Products</span>
           <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">

@@ -44,6 +44,9 @@ model OrderItem {
   quantity        Int
   price           Float
   uploadedPhotoUrl String?
+  mapPrintData    Json?    // For map plaque: { lat, lng, zoom, searchQuery }
+  albumPrintData  Json?    // For album plaque: { photoUrl, songTitle, artist }
+  nightSkyPrintData Json?  // For night sky: { date, time, location }
   createdAt       DateTime @default(now())
   order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product         Product  @relation(fields: [productId], references: [id])

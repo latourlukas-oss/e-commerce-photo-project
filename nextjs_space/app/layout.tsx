@@ -50,7 +50,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <CartProvider>
             <ProductSidebar />
-            <div className="flex flex-col min-h-screen bg-white pb-20 pl-14">
+            <div className="flex flex-col min-h-screen bg-white pb-20 pl-[14rem]">
               <Header />
               <main className="flex-1 bg-white min-h-0 overflow-y-auto">
                 {children}

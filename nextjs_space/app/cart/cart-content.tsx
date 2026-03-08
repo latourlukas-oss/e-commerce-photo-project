@@ -77,6 +77,19 @@ export function CartContent() {
               <div className="flex-1">
                 <h3 className="font-semibold text-slate-800">{item?.productName}</h3>
                 <p className="text-teal-600 font-medium">${item?.price?.toFixed?.(2) ?? '0.00'}</p>
+                {item?.mapPrintData?.searchQuery && (
+                  <p className="text-sm text-slate-500 mt-0.5">Location: {item.mapPrintData.searchQuery}</p>
+                )}
+                {item?.albumPrintData && (item.albumPrintData.songTitle || item.albumPrintData.artist) && (
+                  <p className="text-sm text-slate-500 mt-0.5">
+                    {[item.albumPrintData.songTitle, item.albumPrintData.artist].filter(Boolean).join(' · ')}
+                  </p>
+                )}
+                {item?.nightSkyPrintData && (item.nightSkyPrintData.date || item.nightSkyPrintData.location) && (
+                  <p className="text-sm text-slate-500 mt-0.5">
+                    {[item.nightSkyPrintData.date, item.nightSkyPrintData.time, item.nightSkyPrintData.location].filter(Boolean).join(' · ')}
+                  </p>
+                )}
                 
                 {/* Quantity Controls */}
                 <div className="flex items-center gap-3 mt-2">

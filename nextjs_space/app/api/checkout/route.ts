@@ -11,6 +11,9 @@ interface CartItem {
   quantity: number;
   uploadedPhotoUrl?: string;
   uploadedPhotoKey?: string;
+  mapPrintData?: { lat: number; lng: number; zoom: number; searchQuery: string };
+  albumPrintData?: { photoUrl: string | null; songTitle: string; artist: string };
+  nightSkyPrintData?: { date: string; time: string; location: string };
 }
 
 interface Customer {
@@ -70,7 +73,10 @@ export async function POST(request: NextRequest) {
             productId: item?.productId ?? '',
             quantity: item?.quantity ?? 1,
             price: item?.price ?? 0,
-            uploadedPhotoUrl: item?.uploadedPhotoUrl ?? null
+            uploadedPhotoUrl: item?.uploadedPhotoUrl ?? null,
+            mapPrintData: item?.mapPrintData ?? undefined,
+            albumPrintData: item?.albumPrintData ?? undefined,
+            nightSkyPrintData: item?.nightSkyPrintData ?? undefined
           }))
         }
       }

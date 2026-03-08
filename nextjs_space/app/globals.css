@@ -36,3 +36,15 @@
 .bg-gradient-radial {
   background: radial-gradient(circle at center, var(--tw-gradient-stops));
 }
+
+/* Plaque preview: only the map window is live; keep Leaflet seamless on the photo */
+.map-window-overlay .leaflet-container {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Red pin in map picker – no default icon wrapper background */
+.red-pin-icon {
+  background: none !important;
+  border: none !important;
+}

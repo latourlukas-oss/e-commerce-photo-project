@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 export default function CanvasPrintPage() {
   return (
     <div className="py-12">
-      <div className="max-w-[1200px] mx-auto px-4">
+      <div className="max-w-[1600px] mx-auto px-6 xl:px-10">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-slate-600 hover:text-teal-600 mb-8"
