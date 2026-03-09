@@ -7,7 +7,6 @@ import {
   MAP_DEFAULT_CENTER,
   MAP_DEFAULT_ZOOM,
   MAP_TILE_STYLES,
-  MAP_REGION,
 } from '@/lib/map-print';
 
 export interface AlbumPrintData {
@@ -32,27 +31,18 @@ interface TransparentProductPreviewProps {
   className?: string;
 }
 
-/** Clip-path for the map area based on selected shape. */
-function getMapShapeClipPath(shape: MapPrintData['mapShape']): React.CSSProperties {
-  const s = shape ?? 'rectangle';
-  switch (s) {
-    case 'square':
-      return { clipPath: 'inset(12.5% 0 12.5% 0)' };
-    case 'circle':
-      return { clipPath: 'circle(45% at 50% 50%)' };
-    case 'heart':
-      return { clipPath: 'path("M50 85 C20 55 5 30 25 12 C38 0 50 8 50 8 C50 8 62 0 75 12 C95 30 80 55 50 85 Z")' };
-    case 'teardrop':
-      return { clipPath: 'path("M50 0 C75 0 100 35 100 60 C100 85 75 100 50 100 C25 100 0 85 0 60 C0 35 25 0 50 0 Z")' };
-    case 'house':
-      return { clipPath: 'path("M50 0 L100 45 L100 100 L0 100 L0 45 Z")' };
-    case 'rectangle':
-    default:
-      return {};
-  }
+const LOCKED_MAP_WINDOW = {
+  left: 0.3122,
+  top: 0.3253,
+  width: 0.3954,
+  height: 0.3676,
+};
+
+interface LiveMapTileProps {
+  mapPrintData: MapPrintData | null;
 }
 
-function MapPlaqueContent({ mapPrintData }: { mapPrintData: MapPrintData | null }) {
+function LiveMapTile({ mapPrintData }: LiveMapTileProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<ReturnType<typeof import('leaflet').map> | null>(null);
   const dataRef = useRef(mapPrintData);
@@ -60,15 +50,15 @@ function MapPlaqueContent({ mapPrintData }: { mapPrintData: MapPrintData | null 
 
   useEffect(() => {
     if (!containerRef.current) return;
-    let L: typeof import('leaflet');
     const init = async () => {
-      L = (await import('leaflet')).default;
+      const L = (await import('leaflet')).default;
       if (!containerRef.current) return;
-      const data = dataRef.current;
-      const [lat, lng] = data ? [data.lat, data.lng] : MAP_DEFAULT_CENTER;
-      const zoom = data?.zoom ?? MAP_DEFAULT_ZOOM;
-      const style = data?.mapStyle ?? 'standard';
-      const { url, attribution } = MAP_TILE_STYLES[style];
+      const d = dataRef.current;
+      const [lat, lng] = d ? [d.lat, d.lng] : MAP_DEFAULT_CENTER;
+      const zoom = d?.zoom ?? MAP_DEFAULT_ZOOM;
+      const style = (d?.mapStyle ?? 'classic') as keyof typeof MAP_TILE_STYLES;
+      const { url, attribution } = MAP_TILE_STYLES[style] ?? MAP_TILE_STYLES.classic;
+
       const map = L.map(containerRef.current, {
         center: [lat, lng],
         zoom,
@@ -80,89 +70,88 @@ function MapPlaqueContent({ mapPrintData }: { mapPrintData: MapPrintData | null 
         keyboard: false,
         attributionControl: false,
       });
+
       L.tileLayer(url, { attribution }).addTo(map);
+
+      // Red Google Maps-style pin matching the plaque
+      const redPin = L.divIcon({
+        className: '',
+        html: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
+          <path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 22 14 22S28 24.5 28 14C28 6.27 21.73 0 14 0z" fill="#E53935"/>
+          <circle cx="14" cy="14" r="6" fill="white"/>
+        </svg>`,
+        iconSize: [28, 36],
+        iconAnchor: [14, 36],
+      });
+      L.marker([lat, lng], { icon: redPin }).addTo(map);
+
       mapRef.current = map;
-      // Sync view to latest in case state changed during async init
       const latest = dataRef.current;
       if (latest) map.setView([latest.lat, latest.lng], latest.zoom ?? MAP_DEFAULT_ZOOM);
+      // Force Leaflet to recalculate container size after React has painted
+      setTimeout(() => map.invalidateSize(), 0);
+      setTimeout(() => map.invalidateSize(), 300);
     };
     init();
     return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
+      mapRef.current?.remove();
+      mapRef.current = null;
     };
   }, [mapPrintData?.mapStyle]);
 
-  // Keep preview map in sync with picker (pan/zoom) and redraw after container size changes
+  // Pan/zoom live when selection changes
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapPrintData) return;
-    const [lat, lng] = [mapPrintData.lat, mapPrintData.lng];
-    const zoom = mapPrintData.zoom ?? MAP_DEFAULT_ZOOM;
-    map.setView([lat, lng], zoom);
+    map.setView([mapPrintData.lat, mapPrintData.lng], mapPrintData.zoom ?? MAP_DEFAULT_ZOOM, {
+      animate: true,
+      duration: 0.6,
+    });
     map.invalidateSize();
   }, [mapPrintData?.lat, mapPrintData?.lng, mapPrintData?.zoom]);
 
   return <div ref={containerRef} className="absolute inset-0 w-full h-full" />;
 }
 
-/** Your plaque photo only – no map overlay. */
-const MAP_PHOTO_URL = '/products/map-plaque-photo.png?v=3';
+// Image is 1024×694 → aspect = 694/1024 = 67.77%
+// Using padding-bottom trick so the container has a real height before the image loads,
+// which ensures Leaflet always initialises into a non-zero container.
+const PLAQUE_ASPECT_PCT = (694 / 1024) * 100; // 67.7734375
 
-function PhotoWithLiveMapOverlay({ mapPrintData }: { mapPrintData: MapPrintData | null }) {
+function MapPlaquePreview({ mapPrintData }: { mapPrintData: MapPrintData | null }) {
   return (
-    <div className="absolute inset-0">
-      {/* Your full photo only – no overlay. */}
+    <div style={{ position: 'relative', width: '100%', paddingBottom: `${PLAQUE_ASPECT_PCT}%`, lineHeight: 0 }}>
       <img
-        src={MAP_PHOTO_URL}
+        src="/products/map-plaque-photo.png?v=7"
         alt="Map plaque"
-        className="absolute inset-0 w-full h-full object-contain object-center"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'fill',
+          userSelect: 'none',
+          pointerEvents: 'none',
+        }}
       />
-    </div>
-  );
-}
 
-/** Live plaque preview: map + title, date, location, coordinates from mapPrintData */
-function LiveMapPlaquePreview({ mapPrintData }: { mapPrintData: MapPrintData | null }) {
-  const d = mapPrintData;
-  const lat = d?.lat ?? MAP_DEFAULT_CENTER[0];
-  const lng = d?.lng ?? MAP_DEFAULT_CENTER[1];
-  const title = (d?.title ?? '').trim() || 'Your title';
-  const locationTitle = (d?.locationTitle ?? '').trim() || 'Location';
-  const date = (d?.date ?? '').trim();
-  const includeDate = d?.includeDate ?? false;
-  const showCoordinates = d?.showCoordinates ?? false;
-  const mapShape = d?.mapShape ?? 'rectangle';
-
-  return (
-    <div className="absolute inset-0 flex flex-col bg-white text-slate-800">
-      <div className="flex-shrink-0 pt-3 px-3 text-center">
-        <div className="border-b border-slate-300 pb-1.5">
-          <span className="text-lg font-semibold tracking-tight">{title}</span>
-          <span className="ml-1 text-red-500" aria-hidden>❤</span>
-        </div>
-      </div>
-      {includeDate && date && (
-        <div className="flex-shrink-0 text-center text-sm font-bold text-slate-700 mt-1.5">
-          {date}
-        </div>
-      )}
+      {/* Live map — pinned to the transparent glass window via CSS percentages.
+          Because the container now has a real height (via padding-bottom),
+          percentage top/height on absolute children resolve correctly. */}
       <div
-        className="flex-1 min-h-0 relative mt-2 mx-2 rounded overflow-hidden"
-        style={getMapShapeClipPath(mapShape)}
+        className="map-window-overlay map-window-clip"
+        style={{
+          position: 'absolute',
+          left: `${LOCKED_MAP_WINDOW.left * 100}%`,
+          top: `${LOCKED_MAP_WINDOW.top * 100}%`,
+          width: `${LOCKED_MAP_WINDOW.width * 100}%`,
+          height: `${LOCKED_MAP_WINDOW.height * 100}%`,
+          overflow: 'hidden',
+          zIndex: 2,
+        }}
       >
-        <MapPlaqueContent mapPrintData={mapPrintData} />
+        <LiveMapTile mapPrintData={mapPrintData} />
       </div>
-      <div className="flex-shrink-0 text-center text-sm font-bold text-slate-700 mt-2 px-2">
-        {locationTitle}
-      </div>
-      {showCoordinates && (
-        <div className="flex-shrink-0 text-center text-xs text-slate-500 mt-0.5 pb-2 font-mono">
-          {lat.toFixed(7)}, {lng.toFixed(7)}
-        </div>
-      )}
     </div>
   );
 }
@@ -175,60 +164,43 @@ export function TransparentProductPreview({
   className = '',
 }: TransparentProductPreviewProps) {
   return (
-    <div className={`overflow-hidden w-full ${className}`}>
-      {/* Product only – as large as possible within layout without overlapping */}
-      <div
-        className="relative ml-0 mr-auto overflow-hidden w-full"
-        style={{
-          aspectRatio: '3/4',
-          maxHeight: 'min(80vh, 900px)',
-          maxWidth: '100%',
-        }}
-      >
-          {productType === 'Map' && (
-            <PhotoWithLiveMapOverlay mapPrintData={mapPrintData} />
-          )}
+    <div className={`w-full bg-white ${className}`}>
+      {productType === 'Map' && (
+        <MapPlaquePreview mapPrintData={mapPrintData} />
+      )}
 
-          {productType === 'Album' && (
-            <div className="absolute inset-0 flex flex-col bg-slate-100">
-              <div className="flex-1 relative min-h-0">
-                {albumData?.photoUrl ? (
-                  <img
-                    src={albumData.photoUrl}
-                    alt="Album"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-400">
-                    <span className="text-sm">Your photo</span>
-                  </div>
-                )}
-              </div>
-              <div className="p-3 bg-slate-800/90 text-white text-center">
-                <p className="font-semibold truncate">{albumData?.songTitle || 'Your song'}</p>
-                <p className="text-xs text-slate-300 truncate">{albumData?.artist || 'Artist'}</p>
-              </div>
-            </div>
-          )}
-
-          {productType === 'NightSky' && (
-            <div className="absolute inset-0 flex flex-col bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-900">
-              {/* Simple star field */}
-              <div className="absolute inset-0 opacity-80" style={{
-                backgroundImage: `radial-gradient(2px 2px at 20% 30%, white, transparent),
-                  radial-gradient(2px 2px at 40% 70%, white, transparent),
-                  radial-gradient(1px 1px at 50% 50%, white, transparent),
-                  radial-gradient(2px 2px at 80% 10%, white, transparent),
-                  radial-gradient(1px 1px at 90% 60%, white, transparent)`,
-              }} />
-              <div className="relative flex-1 flex flex-col items-center justify-center p-4 text-white/90 text-center">
-                <p className="text-lg font-semibold">{nightSkyData?.date || 'Date'}</p>
-                <p className="text-sm mt-1">{nightSkyData?.time || 'Time'}</p>
-                <p className="text-sm mt-2 text-white/70">{nightSkyData?.location || 'Location'}</p>
-              </div>
-            </div>
-          )}
+      {productType === 'Album' && (
+        <div className="relative flex flex-col bg-slate-100 rounded-xl overflow-hidden" style={{ aspectRatio: '3/4' }}>
+          <div className="flex-1 relative min-h-0">
+            {albumData?.photoUrl ? (
+              <img src={albumData.photoUrl} alt="Album" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-slate-400 text-sm">Your photo</div>
+            )}
+          </div>
+          <div className="p-3 bg-slate-800/90 text-white text-center">
+            <p className="font-semibold truncate">{albumData?.songTitle || 'Your song'}</p>
+            <p className="text-xs text-slate-300 truncate">{albumData?.artist || 'Artist'}</p>
+          </div>
         </div>
+      )}
+
+      {productType === 'NightSky' && (
+        <div className="relative flex flex-col bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-900 rounded-xl overflow-hidden" style={{ aspectRatio: '3/4' }}>
+          <div className="absolute inset-0 opacity-70" style={{
+            backgroundImage: `radial-gradient(1px 1px at 20% 30%, white, transparent),
+              radial-gradient(2px 2px at 40% 70%, white, transparent),
+              radial-gradient(1px 1px at 60% 20%, white, transparent),
+              radial-gradient(2px 2px at 80% 10%, white, transparent),
+              radial-gradient(1px 1px at 30% 80%, white, transparent)`,
+          }} />
+          <div className="relative flex-1 flex flex-col items-center justify-center p-6 text-white/90 text-center">
+            <p className="text-xl font-bold">{nightSkyData?.date || 'Your date'}</p>
+            <p className="text-sm mt-1 opacity-80">{nightSkyData?.time || ''}</p>
+            <p className="text-sm mt-2 opacity-70">{nightSkyData?.location || 'Your location'}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -37,7 +37,13 @@
   background: radial-gradient(circle at center, var(--tw-gradient-stops));
 }
 
-/* Plaque preview: only the map window is live; keep Leaflet seamless on the photo */
+/* Plaque preview: clip the map to its window via the outer container only.
+   Do NOT apply overflow/clip-path inside Leaflet's own panes — they have
+   no explicit dimensions and clipping them hides all tiles. */
+.map-window-overlay {
+  overflow: hidden;
+}
+
 .map-window-overlay .leaflet-container {
   background: transparent !important;
   border: none !important;

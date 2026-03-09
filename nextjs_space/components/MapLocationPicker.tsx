@@ -53,11 +53,16 @@ export function MapLocationPicker({ value, onChange, className = '' }: MapLocati
 
   searchQueryRef.current = searchQuery;
 
+  // Always keep a ref to the latest value so the stale moveend closure
+  // never overwrites fields (mapStyle, mapShape, etc.) with old data.
+  const valueRef = useRef(value);
+  valueRef.current = value;
+
   const reportMapView = useCallback(
     (lat: number, lng: number, zoom: number, query: string) => {
-      onChange({ ...value, lat, lng, zoom, searchQuery: query } as MapPrintData);
+      onChange({ ...valueRef.current, lat, lng, zoom, searchQuery: query } as MapPrintData);
     },
-    [onChange, value]
+    [onChange]
   );
 
   useEffect(() => {
@@ -72,12 +77,12 @@ export function MapLocationPicker({ value, onChange, className = '' }: MapLocati
       L = (await import('leaflet')).default;
       if (!mapRef.current) return;
 
-      // Red teardrop marker to match the plaque (left picture)
+      // Red Google Maps-style pin matching the plaque photo
       const RedIcon = L.divIcon({
-        className: 'red-pin-icon',
-        html: '<div style="width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:24px solid #dc2626;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));margin-left:-12px;margin-top:-24px;"></div>',
-        iconSize: [24, 24],
-        iconAnchor: [12, 24],
+        className: '',
+        html: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36"><path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 22 14 22S28 24.5 28 14C28 6.27 21.73 0 14 0z" fill="#E53935"/><circle cx="14" cy="14" r="6" fill="white"/></svg>`,
+        iconSize: [28, 36],
+        iconAnchor: [14, 36],
       });
 
       const [lat, lng] = value
@@ -86,11 +91,11 @@ export function MapLocationPicker({ value, onChange, className = '' }: MapLocati
       const zoom = value?.zoom ?? MAP_DEFAULT_ZOOM;
 
       const map = L.map(mapRef.current).setView([lat, lng], zoom);
-      const style = value?.mapStyle ?? 'streets';
+      const style = (value?.mapStyle ?? 'classic') as keyof typeof MAP_TILE_STYLES;
       const { url, attribution } = MAP_TILE_STYLES[style];
       L.tileLayer(url, { attribution }).addTo(map);
 
-      const marker = L.marker([lat, lng], { icon: RedIcon }).addTo(map);
+      const marker = L.marker([lat, lng], { icon: RedIcon, zIndexOffset: 1000 }).addTo(map);
 
       mapInstanceRef.current = map;
       markerRef.current = marker;

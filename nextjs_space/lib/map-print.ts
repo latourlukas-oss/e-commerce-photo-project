@@ -8,7 +8,7 @@ export interface MapPrintData {
   /** Map outline shape (permanent on product) */
   mapShape?: 'square' | 'rectangle' | 'heart' | 'circle' | 'teardrop' | 'house';
   /** Map visual style */
-  mapStyle?: 'standard' | 'light' | 'satellite' | 'streets';
+  mapStyle?: 'classic' | 'voyager' | 'light' | 'satellite';
   /** Main title printed on plaque (e.g. Happy Anniversary!) – max 19 chars */
   title?: string;
   /** Location label (e.g. Starbucks, Star Casino) – max 45 chars */
@@ -19,17 +19,20 @@ export interface MapPrintData {
   showCoordinates?: boolean;
 }
 
-/** Default: Gold Coast (matches plaque photo) so map selection matches the left picture. */
+/** Default: Gold Coast, zoom 14 – matches the street-level detail shown in the plaque photo. */
 export const MAP_DEFAULT_CENTER: [number, number] = [-27.9985041, 153.4227099];
-export const MAP_DEFAULT_ZOOM = 15;
+export const MAP_DEFAULT_ZOOM = 14;
 
-/** Map tile URLs by style (no API key). "streets" = OSM default, matches plaque reference (yellow roads, light blue water). */
+/**
+ * Map tile styles. "classic" = ESRI World Street Map — closest free match to the
+ * Google Maps-like style shown on the plaque (blue water, cream land, yellow roads).
+ */
 export const MAP_TILE_STYLES = {
-  streets: {
-    url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  classic: {
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community',
   },
-  standard: {
+  voyager: {
     url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
   },
@@ -39,12 +42,12 @@ export const MAP_TILE_STYLES = {
   },
   satellite: {
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attribution: '&copy; <a href="https://www.esri.com/">Esri</a>',
+    attribution: '&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
   },
 } as const;
 
-export const MAP_TILE_URL = MAP_TILE_STYLES.standard.url;
-export const MAP_ATTRIBUTION = MAP_TILE_STYLES.standard.attribution;
+export const MAP_TILE_URL = MAP_TILE_STYLES.classic.url;
+export const MAP_ATTRIBUTION = MAP_TILE_STYLES.classic.attribution;
 
 /** Map window on the plaque photo (%). Picker uses same layout so selection matches the plaque. */
 export const MAP_REGION = { top: 24, right: 11, bottom: 35, left: 11 };
