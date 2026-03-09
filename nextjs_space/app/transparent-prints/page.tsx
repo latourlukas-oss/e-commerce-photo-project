@@ -4,7 +4,7 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, MapPin, Moon, Music, ShoppingCart, Square, RectangleHorizontal, Heart, Circle, MapPinned, Home, Plus, Minus, Search, Settings } from 'lucide-react';
+import { ArrowLeft, MapPin, Moon, Music, ShoppingCart, Square, Heart, Circle, Plus, Minus, Search, Settings } from 'lucide-react';
 import { useCart } from '@/components/cart-provider';
 import type { MapPrintData } from '@/components/MapLocationPicker';
 import type { AlbumPrintData, NightSkyPrintData } from '@/components/TransparentProductPreview';
@@ -41,12 +41,9 @@ const MAP_STYLES = [
 ] as const;
 
 const MAP_SHAPES = [
-  { id: 'rectangle', label: 'Rectangle', icon: RectangleHorizontal },
-  { id: 'square',    label: 'Square',    icon: Square },
-  { id: 'heart',     label: 'Heart',     icon: Heart },
-  { id: 'circle',    label: 'Circle',    icon: Circle },
-  { id: 'teardrop',  label: 'Teardrop',  icon: MapPinned },
-  { id: 'house',     label: 'House',     icon: Home },
+  { id: 'square',  label: 'Square', icon: Square },
+  { id: 'circle',  label: 'Circle', icon: Circle },
+  { id: 'heart',   label: 'Heart',  icon: Heart },
 ];
 
 const TITLE_PRESETS = [
@@ -97,7 +94,7 @@ export default function TransparentPrintsPage() {
     lng: MAP_DEFAULT_CENTER[1],
     zoom: MAP_DEFAULT_ZOOM,
     searchQuery: '',
-    mapShape: 'rectangle',
+    mapShape: 'square',
     mapStyle: 'classic',
   }));
 
@@ -321,7 +318,7 @@ export default function TransparentPrintsPage() {
                           onClick={() => setMapPrintData((d) => d ? { ...d, mapShape: id as MapPrintData['mapShape'] } : d)}
                           title={label}
                           className={`flex flex-col items-center gap-1 py-2 rounded-xl border-2 transition-all ${
-                            (mapPrintData?.mapShape ?? 'rectangle') === id
+                            (mapPrintData?.mapShape ?? 'square') === id
                               ? 'border-teal-600 bg-teal-50 text-teal-700'
                               : 'border-slate-200 hover:border-slate-300 text-slate-500'
                           }`}

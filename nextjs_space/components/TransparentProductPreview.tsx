@@ -25,16 +25,13 @@ type ProductType = 'Map' | 'Album' | 'NightSky';
 
 // ─── Calibration positions ────────────────────────────────────────────────────
 // All values are fractions (0–1) of the plaque image (1024 × 694).
-// Use the ⚙ Calibrate button on the page to drag/resize each region,
-// then click "Copy to Code" and paste the new values here.
-// Starting positions for the new clean plaque image (glass fills ~14%–86% wide, ~2%–80% tall).
-// Use the ⚙ Calibrate button to drag/resize each box, then click "Copy to Code" and paste here.
+// Calibrated positions — locked in after manual calibration on the live preview.
 export let PLAQUE_CAL = {
-  title:    { left: 0.180, top: 0.030, width: 0.640, height: 0.130 },
-  map:      { left: 0.140, top: 0.180, width: 0.720, height: 0.480 },
-  location: { left: 0.180, top: 0.680, width: 0.640, height: 0.060 },
-  date:     { left: 0.180, top: 0.740, width: 0.640, height: 0.050 },
-  coords:   { left: 0.180, top: 0.790, width: 0.640, height: 0.040 },
+  title   : { left: 0.302, top: 0.093, width: 0.405, height: 0.050 },
+  map     : { left: 0.095, top: 0.154, width: 0.827, height: 0.517 },
+  location: { left: 0.304, top: 0.734, width: 0.399, height: 0.043 },
+  date    : { left: 0.310, top: 0.677, width: 0.384, height: 0.043 },
+  coords  : { left: 0.304, top: 0.784, width: 0.419, height: 0.040 },
 };
 
 // ─── Calibration overlay ──────────────────────────────────────────────────────
@@ -45,14 +42,14 @@ type Region = { left: number; top: number; width: number; height: number };
 
 const CAL_COLORS: Record<RegionId, string> = {
   title:    'rgba(251,146,60,0.35)',
-  map:      'rgba(45,212,191,0.25)',
+  map:      'rgba(59,130,246,0.30)',
   location: 'rgba(74,222,128,0.35)',
   date:     'rgba(167,139,250,0.35)',
   coords:   'rgba(248,113,113,0.35)',
 };
 const CAL_BORDERS: Record<RegionId, string> = {
   title:    '#f97316',
-  map:      '#0d9488',
+  map:      '#2563eb',
   location: '#16a34a',
   date:     '#7c3aed',
   coords:   '#dc2626',
@@ -216,9 +213,8 @@ function CalibrationOverlay({ onClose, onUpdate }: CalibrationOverlayProps) {
 // ─── Shape clip paths (SVG objectBoundingBox — scales to any size) ────────────
 
 const SHAPE_CLIP_PATHS: Record<string, string> = {
-  heart:    'M0.5,0.27 C0.5,0.16 0.36,0.05 0.25,0.05 C0.09,0.05 0,0.19 0,0.36 C0,0.62 0.25,0.8 0.5,1 C0.75,0.8 1,0.62 1,0.36 C1,0.19 0.91,0.05 0.75,0.05 C0.64,0.05 0.5,0.16 0.5,0.27 Z',
-  teardrop: 'M0.5,1 C0.22,0.78 0.04,0.6 0.04,0.38 C0.04,0.15 0.25,0 0.5,0 C0.75,0 0.96,0.15 0.96,0.38 C0.96,0.6 0.78,0.78 0.5,1 Z',
-  house:    'M0.5,0 L1,0.44 L0.84,0.44 L0.84,1 L0.16,1 L0.16,0.44 Z',
+  // Flatter top bumps: peaks at y=0.14 instead of y=0.05, gentler arcs
+  heart: 'M0.5,0.30 C0.5,0.18 0.38,0.12 0.27,0.12 C0.11,0.12 0.02,0.25 0.02,0.40 C0.02,0.63 0.26,0.81 0.5,1 C0.74,0.81 0.98,0.63 0.98,0.40 C0.98,0.25 0.89,0.12 0.73,0.12 C0.62,0.12 0.5,0.18 0.5,0.30 Z',
 };
 
 // ─── Pin marker SVGs ──────────────────────────────────────────────────────────
