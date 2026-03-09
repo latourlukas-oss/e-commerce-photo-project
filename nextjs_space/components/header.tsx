@@ -4,10 +4,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ShoppingCart } from 'lucide-react';
 import { useCart } from './cart-provider';
+import { usePathname } from 'next/navigation';
 
 export function Header() {
   const { cart } = useCart();
   const itemCount = cart?.items?.length ?? 0;
+  const pathname = usePathname();
+  const isHomepage = pathname === '/';
 
   return (
     <header className="sticky top-0 z-50">
@@ -35,24 +38,26 @@ export function Header() {
         </div>
       </div>
 
-      {/* Full logo (no crop). "Memories that matter" removed from image file. Tagline: MEMORIES MATTER MOST stacked, centred. */}
-      <div className="bg-white border-b border-slate-100 py-6">
-        <div className="max-w-[1200px] mx-auto px-4 flex justify-center">
-          <Link href="/" className="flex flex-col items-center gap-6 no-underline group">
-            <Image
-              src="/logo.png"
-              alt="PeoplesPrints"
-              width={570}
-              height={377}
-              className="w-[320px] sm:w-[400px] md:w-[480px] h-auto object-contain group-hover:opacity-90 transition-opacity"
-              priority
-            />
-            <span className="text-base md:text-lg lg:text-xl tracking-widest text-slate-700 font-medium text-center">
-              MEMORIES<br />MATTER<br />MOST
-            </span>
-          </Link>
+      {/* Logo + tagline — homepage only */}
+      {isHomepage && (
+        <div className="bg-white border-b border-slate-100 py-6">
+          <div className="max-w-[1200px] mx-auto px-4 flex justify-center">
+            <Link href="/" className="flex flex-col items-center gap-6 no-underline group">
+              <Image
+                src="/logo.png"
+                alt="PeoplesPrints"
+                width={570}
+                height={377}
+                className="w-[320px] sm:w-[400px] md:w-[480px] h-auto object-contain group-hover:opacity-90 transition-opacity"
+                priority
+              />
+              <span className="text-base md:text-lg lg:text-xl tracking-widest text-slate-700 font-medium text-center">
+                MEMORIES<br />MATTER<br />MOST
+              </span>
+            </Link>
+          </div>
         </div>
-      </div>
+      )}
     </header>
   );
 }

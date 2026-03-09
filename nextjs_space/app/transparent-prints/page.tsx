@@ -4,7 +4,7 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, MapPin, Moon, Music, ShoppingCart, Square, RectangleHorizontal, Heart, Circle, MapPinned, Home, Plus, Minus, Search } from 'lucide-react';
+import { ArrowLeft, MapPin, Moon, Music, ShoppingCart, Square, RectangleHorizontal, Heart, Circle, MapPinned, Home, Plus, Minus, Search, Settings } from 'lucide-react';
 import { useCart } from '@/components/cart-provider';
 import type { MapPrintData } from '@/components/MapLocationPicker';
 import type { AlbumPrintData, NightSkyPrintData } from '@/components/TransparentProductPreview';
@@ -49,6 +49,40 @@ const MAP_SHAPES = [
   { id: 'house',     label: 'House',     icon: Home },
 ];
 
+const TITLE_PRESETS = [
+  'Where It Began',
+  'Where It Started',
+  'How It Began',
+  'Where We Met',
+];
+
+const PIN_STYLES = [
+  {
+    id: 'pin', label: 'Pin',
+    svg: <svg viewBox="0 0 28 36" className="w-6 h-7"><path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 22 14 22S28 24.5 28 14C28 6.27 21.73 0 14 0z" fill="#E53935"/><circle cx="14" cy="14" r="6" fill="white"/></svg>,
+  },
+  {
+    id: 'heart', label: 'Heart',
+    svg: <svg viewBox="0 0 32 32" className="w-7 h-7"><path d="M16,28 C16,28 2,18 2,10 C2,5.5 5.5,2 10,3.5 C12.5,4.5 16,8 16,8 C16,8 19.5,4.5 22,3.5 C26.5,2 30,5.5 30,10 C30,18 16,28 16,28Z" fill="#E53935"/></svg>,
+  },
+  {
+    id: 'lollipop', label: 'Lollipop',
+    svg: <svg viewBox="0 0 24 38" className="w-5 h-7"><circle cx="12" cy="12" r="12" fill="#E53935"/><circle cx="12" cy="12" r="5" fill="white"/><rect x="11" y="24" width="2" height="14" rx="1" fill="#E53935"/></svg>,
+  },
+  {
+    id: 'house', label: 'House',
+    svg: <svg viewBox="0 0 32 32" className="w-7 h-7"><path d="M16,2 L30,16 L25,16 L25,30 L19,30 L19,22 L13,22 L13,30 L7,30 L7,16 L2,16 Z" fill="#E53935"/></svg>,
+  },
+  {
+    id: 'thumbtack', label: 'Tack',
+    svg: <svg viewBox="0 0 28 36" className="w-6 h-7"><circle cx="14" cy="10" r="10" fill="#E53935"/><circle cx="14" cy="10" r="4" fill="white"/><rect x="12.5" y="20" width="3" height="16" rx="1.5" fill="#E53935"/></svg>,
+  },
+  {
+    id: 'none', label: 'None',
+    svg: <span className="text-slate-400 text-xs font-medium">—</span>,
+  },
+] as const;
+
 export default function TransparentPrintsPage() {
   const router = useRouter();
   const { addItem } = useCart();
@@ -56,6 +90,7 @@ export default function TransparentPrintsPage() {
   const [productType, setProductType] = useState('Map');
   const [productSize, setProductSize] = useState('A5');
   const [editTab, setEditTab] = useState<'search' | 'adjust'>('search');
+  const [showCalibration, setShowCalibration] = useState(false);
 
   const [mapPrintData, setMapPrintData] = useState<MapPrintData | null>(() => ({
     lat: MAP_DEFAULT_CENTER[0],
@@ -121,13 +156,32 @@ export default function TransparentPrintsPage() {
 
           {/* ── LEFT: sticky product preview ── */}
           <div className="lg:sticky lg:top-6 lg:self-start">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Preview</p>
-            <TransparentProductPreview
-              productType={productType as 'Map' | 'Album' | 'NightSky'}
-              mapPrintData={mapPrintData}
-              albumData={albumData}
-              nightSkyData={nightSkyData}
-            />
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Preview</p>
+              {productType === 'Map' && (
+                <button
+                  onClick={() => setShowCalibration(c => !c)}
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all ${
+                    showCalibration
+                      ? 'bg-teal-600 text-white border-teal-600'
+                      : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                  }`}
+                  title="Toggle calibration overlay"
+                >
+                  <Settings className="w-3 h-3" /> Calibrate
+                </button>
+              )}
+            </div>
+            <div className={showCalibration ? 'mb-12' : ''}>
+              <TransparentProductPreview
+                productType={productType as 'Map' | 'Album' | 'NightSky'}
+                mapPrintData={mapPrintData}
+                albumData={albumData}
+                nightSkyData={nightSkyData}
+                showCalibration={showCalibration}
+                onCalibrationClose={() => setShowCalibration(false)}
+              />
+            </div>
             <p className="text-xs text-slate-400 text-center mt-3">
               Map data from © MapBox © OpenStreetMap
             </p>
@@ -279,20 +333,73 @@ export default function TransparentPrintsPage() {
                     </div>
                   </div>
 
+                  {/* Pin style */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-2">Pin Style</label>
+                    <div className="grid grid-cols-6 gap-2">
+                      {PIN_STYLES.map(({ id, label, svg }) => (
+                        <button
+                          key={id}
+                          onClick={() => setMapPrintData((d) => d ? { ...d, pinStyle: id as typeof PIN_STYLES[number]['id'] } : d)}
+                          title={label}
+                          className={`flex flex-col items-center justify-center gap-1 py-2 rounded-xl border-2 transition-all ${
+                            (mapPrintData?.pinStyle ?? 'pin') === id
+                              ? 'border-teal-600 bg-teal-50 text-teal-700'
+                              : 'border-slate-200 hover:border-slate-300 text-slate-500'
+                          }`}
+                        >
+                          <span className="flex items-center justify-center h-7">{svg}</span>
+                          <span className="text-[9px] font-medium leading-none">{label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   {/* Options: date, coordinates, title, location label */}
                   <div className="space-y-3 border-t border-slate-100 pt-4">
                     <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Text on plaque</p>
 
                     <div>
-                      <label className="block text-xs text-slate-500 mb-1">Title (max 19 characters)</label>
+                      <label className="block text-xs text-slate-500 mb-2">Title</label>
+                      {/* Preset chips */}
+                      <div className="flex flex-wrap gap-1.5 mb-2">
+                        {TITLE_PRESETS.map((preset) => (
+                          <button
+                            key={preset}
+                            onClick={() => setMapPrintData((d) => d ? { ...d, title: preset } : d)}
+                            className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-all ${
+                              mapPrintData?.title === preset
+                                ? 'bg-teal-600 text-white border-teal-600'
+                                : 'bg-white text-slate-600 border-slate-200 hover:border-teal-400'
+                            }`}
+                          >{preset}</button>
+                        ))}
+                      </div>
+                      {/* Free-text input */}
                       <input
                         type="text"
-                        maxLength={19}
+                        maxLength={22}
                         value={mapPrintData?.title ?? ''}
                         onChange={(e) => setMapPrintData((d) => d ? { ...d, title: e.target.value } : d)}
-                        placeholder="e.g. Where It Began"
+                        placeholder="Or type your own…"
                         className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
                       />
+                      {/* Heart toggle */}
+                      <label className="flex items-center gap-3 cursor-pointer mt-2">
+                        <div
+                          onClick={() => setMapPrintData((d) => d ? { ...d, heartEnabled: !d.heartEnabled } : d)}
+                          className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${
+                            mapPrintData?.heartEnabled ? 'bg-rose-500' : 'bg-slate-300'
+                          }`}
+                        >
+                          <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all ${
+                            mapPrintData?.heartEnabled ? 'left-5' : 'left-0.5'
+                          }`} />
+                        </div>
+                        <span className="text-sm text-slate-700 font-medium flex items-center gap-1">
+                          Add heart <span className="text-rose-400">♥</span>
+                        </span>
+                      </label>
                     </div>
 
                     <div>

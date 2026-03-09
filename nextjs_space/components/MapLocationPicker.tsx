@@ -43,41 +43,44 @@ async function searchLocation(query: string): Promise<NominatimResult[]> {
 }
 
 export function MapLocationPicker({ value, onChange, className = '' }: MapLocationPickerProps) {
-  const mapRef = useRef<HTMLDivElement>(null);
+  const outerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<ReturnType<typeof import('leaflet').map> | null>(null);
   const markerRef = useRef<ReturnType<typeof import('leaflet').marker> | null>(null);
   const searchQueryRef = useRef(value?.searchQuery ?? '');
   const [searchQuery, setSearchQuery] = useState(value?.searchQuery ?? '');
   const [searchStatus, setSearchStatus] = useState<'idle' | 'loading' | 'error'>('idle');
-  const [mounted, setMounted] = useState(false);
 
   searchQueryRef.current = searchQuery;
 
-  // Always keep a ref to the latest value so the stale moveend closure
-  // never overwrites fields (mapStyle, mapShape, etc.) with old data.
   const valueRef = useRef(value);
   valueRef.current = value;
 
+  // Keep onChange in a ref so the map's moveend closure never goes stale
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
   const reportMapView = useCallback(
     (lat: number, lng: number, zoom: number, query: string) => {
-      onChange({ ...valueRef.current, lat, lng, zoom, searchQuery: query } as MapPrintData);
+      onChangeRef.current({ ...valueRef.current, lat, lng, zoom, searchQuery: query } as MapPrintData);
     },
-    [onChange]
+    [] // stable — uses refs internally
   );
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    // #region agent log
+    fetch('http://127.0.0.1:7809/ingest/f3bbd371-ddfe-4a24-b817-997e43f05a2c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bde397'},body:JSON.stringify({sessionId:'bde397',location:'MapLocationPicker.tsx:effect',message:'MapLocationPicker effect fired',data:{hasOuter:!!outerRef.current,hasMap:!!mapInstanceRef.current},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
+    // #endregion
+    if (!outerRef.current || mapInstanceRef.current) return;
 
-  useEffect(() => {
-    if (!mounted || !mapRef.current) return;
+    // Create Leaflet container imperatively — React never reconciles inside it
+    const container = document.createElement('div');
+    container.style.cssText = 'position:absolute;inset:0;width:100%;height:100%';
+    outerRef.current.appendChild(container);
 
-    let L: typeof import('leaflet');
     const init = async () => {
-      L = (await import('leaflet')).default;
-      if (!mapRef.current) return;
+      const L = (await import('leaflet')).default;
+      if (!container.isConnected) return;
 
-      // Red Google Maps-style pin matching the plaque photo
       const RedIcon = L.divIcon({
         className: '',
         html: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36"><path d="M14 0C6.27 0 0 6.27 0 14c0 10.5 14 22 14 22S28 24.5 28 14C28 6.27 21.73 0 14 0z" fill="#E53935"/><circle cx="14" cy="14" r="6" fill="white"/></svg>`,
@@ -85,13 +88,13 @@ export function MapLocationPicker({ value, onChange, className = '' }: MapLocati
         iconAnchor: [14, 36],
       });
 
-      const [lat, lng] = value
-        ? [value.lat, value.lng]
+      const [lat, lng] = valueRef.current
+        ? [valueRef.current.lat, valueRef.current.lng]
         : MAP_DEFAULT_CENTER;
-      const zoom = value?.zoom ?? MAP_DEFAULT_ZOOM;
+      const zoom = valueRef.current?.zoom ?? MAP_DEFAULT_ZOOM;
 
-      const map = L.map(mapRef.current).setView([lat, lng], zoom);
-      const style = (value?.mapStyle ?? 'classic') as keyof typeof MAP_TILE_STYLES;
+      const map = L.map(container).setView([lat, lng], zoom);
+      const style = (valueRef.current?.mapStyle ?? 'classic') as keyof typeof MAP_TILE_STYLES;
       const { url, attribution } = MAP_TILE_STYLES[style];
       L.tileLayer(url, { attribution }).addTo(map);
 
@@ -107,20 +110,20 @@ export function MapLocationPicker({ value, onChange, className = '' }: MapLocati
         reportMapView(center.lat, center.lng, z, searchQueryRef.current);
       });
 
-      if (!value) {
-        reportMapView(lat, lng, zoom, searchQueryRef.current);
-      }
+      reportMapView(lat, lng, zoom, searchQueryRef.current);
     };
 
     init();
+
     return () => {
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
+        try { mapInstanceRef.current.remove(); } catch { /* ignore */ }
         mapInstanceRef.current = null;
       }
       markerRef.current = null;
+      try { container.remove(); } catch { /* ignore */ }
     };
-  }, [mounted]);
+  }, []); // runs once only — stable refs handle fresh values
 
   const handleSearch = async () => {
     const q = searchQuery.trim();
@@ -175,9 +178,9 @@ export function MapLocationPicker({ value, onChange, className = '' }: MapLocati
         Pan and zoom the map to choose the exact area that will be printed.
       </p>
       <div
-        ref={mapRef}
+        ref={outerRef}
         className="w-full rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 shadow-md"
-        style={{ aspectRatio: MAP_WINDOW_ASPECT, maxHeight: '320px', boxShadow: '0 2px 12px rgba(0,0,0,.08)' }}
+        style={{ position: 'relative', aspectRatio: MAP_WINDOW_ASPECT, maxHeight: '320px', boxShadow: '0 2px 12px rgba(0,0,0,.08)' }}
       />
     </div>
   );

@@ -17,6 +17,10 @@ export interface MapPrintData {
   date?: string;
   includeDate?: boolean;
   showCoordinates?: boolean;
+  /** Append a heart symbol ♥ after the title */
+  heartEnabled?: boolean;
+  /** Pin marker style shown on the map */
+  pinStyle?: 'pin' | 'heart' | 'lollipop' | 'house' | 'thumbtack' | 'none';
 }
 
 /** Default: Gold Coast, zoom 14 – matches the street-level detail shown in the plaque photo. */
